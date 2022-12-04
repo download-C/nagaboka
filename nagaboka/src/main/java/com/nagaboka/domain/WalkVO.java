@@ -8,6 +8,6 @@ public class WalkVO {
 	private String wname;
 	private int wlikecount;
 	private int wccount;
-	private double lat;
-	private double lng;
+	private double wlat;
+	private double wlng;
 }
