@@ -1,12 +1,11 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<title>views/sample/member.jsp</title>
-</head>
-<body>
+<!-- $${pageContext.request.contextPath} -->
+<%@ include file="../include/header.jsp"%>
+
+<!-- 본문 작성 위치 시작 -->
+${cursor}
+
 	<h1>
 		WEB-INF/views/ <span
 			style="color: white; background-color: pink; font-size: 1.5em">
@@ -22,5 +21,6 @@
 		</form>
 	</fieldset>
 
-</body>
-</html>
+<!-- 본문 작성 위치 끝 -->
+
+<%@ include file="../include/footer.jsp"%>

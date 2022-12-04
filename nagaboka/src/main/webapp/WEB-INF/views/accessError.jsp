@@ -1,12 +1,11 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<title>views/accessError.jsp</title>
-</head>
-<body>
+<!-- $${pageContext.request.contextPath} -->
+<%@ include file="../include/header.jsp"%>
+
+<!-- 본문 작성 위치 시작 -->
+${cursor}
+
 	<h1>
 		WEB-INF/views/ <span
 			style="color: white; background-color: red; font-size: 1.5em">
@@ -19,5 +18,6 @@
 	인증 정보: <h4> ${auth }</h4> <hr>
 	SPRING_SECURITY_403_EXCEPTION.getMessage(): <h4> ${SPRING_SECURITY_403_EXCEPTION.getMessage() }</h4>
 	
-</body>
-</html>
+<!-- 본문 작성 위치 끝 -->
+
+<%@ include file="../include/footer.jsp"%>

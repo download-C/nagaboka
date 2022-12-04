@@ -1,19 +1,17 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<title>views/sample/all.jsp</title>
-</head>
-<body>
+<!-- $${pageContext.request.contextPath} -->
+<%@ include file="../include/header.jsp"%>
+
+<!-- 본문 작성 위치 시작 -->
+${cursor}
+
 	<h1>
 		WEB-INF/views/ <span
 			style="color: white; background-color: palegreen; font-size: 1.5em">
 			🎅🎅all🤶🤶 </span>.jsp
 	</h1>
 	
-<!-- 	<a href="/customLogout">로그아웃</a> -->
 	<fieldset style="display: inline;">
 		<legend>✨로그아웃👋👋 </legend>
 		<form action="/customLogout" method="post">
@@ -22,5 +20,6 @@
 		</form>
 	</fieldset>
 
-</body>
-</html>
+<!-- 본문 작성 위치 끝 -->
+
+<%@ include file="../include/footer.jsp"%>

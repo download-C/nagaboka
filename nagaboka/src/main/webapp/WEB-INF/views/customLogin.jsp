@@ -1,13 +1,14 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+<!-- $${pageContext.request.contextPath} -->
+<%@ include file="../include/header.jsp"%>
+
+<!-- 본문 작성 위치 시작 -->
+${cursor}
+
+<!-- 나중에 지워주세용 ㅎ -->
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<title>views/customLogin.jsp</title>
-</head>
-<body>
+
 	<h1>
 		WEB-INF/views/ <span
 			style="color: white; background-color: orange; font-size: 1.5em">
@@ -29,5 +30,6 @@
 		</form>
 	</fieldset>
 
-</body>
-</html>
+<!-- 본문 작성 위치 끝 -->
+
+<%@ include file="../include/footer.jsp"%>
