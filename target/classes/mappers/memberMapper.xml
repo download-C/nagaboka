@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.nagaboka.mapper.MemberMapper">
+
+	<resultMap type="com.nagaboka.domain.MemberVO" id="memberMap">
+		<id property="user_id" column="user_id" />
+		<result property="user_id" column="user_id" />
+		<result property="user_pw" column="user_pw" />
+		<result property="user_name" column="user_name" />
+		<result property="user_phone" column="user_phone" />
+		<result property="reg_date" column="reg_date" />
+		<result property="latitude" column="latitude" />
+		<result property="longitude" column="longitude" />
+		<result property="road_full_addr" column="road_full_addr" />
+		<result property="enabled" column="enabled" />
+		<collection property="authList" resultMap="authMap" />
+	</resultMap>
+	
+	<resultMap type="com.nagaboka.domain.AuthVO" id="authMap">
+		<result property="user_id" column="user_id" />
+		<result property="auth" column="auth" />
+	</resultMap>
+	
+	<!-- 회원 정보 조회 -->
+	<select id="getMember" resultMap="memberMap">
+		select m.user_id, m.user_pw, m.user_name, m.enabled, m.reg_date, a.auth
+		from nagaboka.member m left outer join nagaboka.member_auth a 
+		on m.user_id = a.user_id
+		where m.user_id = #{user_id}
+	</select>
+
+</mapper>

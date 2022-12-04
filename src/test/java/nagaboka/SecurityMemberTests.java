@@ -6,6 +6,7 @@ import java.sql.PreparedStatement;
 import javax.inject.Inject;
 import javax.sql.DataSource;
 
+import org.apache.ibatis.session.SqlSession;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -13,6 +14,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import com.nagaboka.domain.AuthVO;
+import com.nagaboka.domain.MemberVO;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration({
@@ -28,6 +32,11 @@ public class SecurityMemberTests {
 	
 	@Inject
 	private DataSource ds;
+	
+	@Inject
+	private SqlSession session;
+	
+	final static String NAMESPACE = "com.nagaboka.mapper.MemberMapper";
 	// 멤버변수 끝 =========================
 	
 	
@@ -71,7 +80,7 @@ public class SecurityMemberTests {
 	
 //	@Test   ㅇㅋ
 	public void 인증정보테이블채우기() throws Exception {
-		log.info("ψ(｀∇´)ψ 인증정보테이블채우기  호출됨");
+		log.info("(∩^o^)⊃━☆ 인증정보테이블채우기  호출됨");
 
 		Connection con = null;
 		PreparedStatement pstmt = null;
@@ -94,7 +103,22 @@ public class SecurityMemberTests {
 			
 		}// for
 		
-	}
+	} // 인증정보테이블채우기()
+	
+	
+	
+//	@Test   ㅇㅋ
+	public void getMemberTest() throws Exception {
+		log.info("(∩^o^)⊃━☆ getMemberTest  호출됨");
+		
+		String user_id = "user0";
+		MemberVO vo = session.selectOne(NAMESPACE+".getMember", user_id);
+		log.info("(∩^o^)⊃━☆ getMemberTest  가져온 횐 정보: " + vo);
+		
+		vo.getAuthList()
+		.forEach(authVO -> log.info("(∩^o^)⊃━☆ getMemberTest  MemberVO -> " + authVO));
+		
+	} // getMemberTest()
 
 	
 	
