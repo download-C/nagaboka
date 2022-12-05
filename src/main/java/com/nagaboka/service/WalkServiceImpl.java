@@ -8,7 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import com.nagaboka.domain.WalkVO;
+import com.nagaboka.domain.walk.WalkVO;
 import com.nagaboka.persistence.WalkDAO;
 
 @Service

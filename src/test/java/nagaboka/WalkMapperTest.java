@@ -14,8 +14,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.nagaboka.domain.WalkCommentVO;
-import com.nagaboka.domain.WalkVO;
+import com.nagaboka.domain.walk.WalkReviewVO;
+import com.nagaboka.domain.walk.WalkVO;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(
@@ -59,11 +59,11 @@ public class WalkMapperTest {
 		
 		WalkVO walk = session.selectOne(NAMESPACE+".getWalk", "광안리해수욕장");
 		
-		WalkCommentVO comment = new WalkCommentVO();
-		comment.setUsername("admin");
+		WalkReviewVO comment = new WalkReviewVO();
+		comment.setUser_id("admin");
 		comment.setWalk(walk);
-		comment.setWccon("다녀오니까 좋았어여~");
-		comment.setWclike(true);
+		comment.setWrcon("다녀오니까 좋았어여~");
+		comment.setWrlike(true);
 		
 		session.insert(NAMESPACE+".insertComment", comment);
 		
