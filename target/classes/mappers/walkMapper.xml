@@ -36,46 +36,59 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 </resultMap> -->
 
 <!-- 산책 장소 최초 입력 -->
+<!-- 테스트 완료 -->
 <insert id="insertWalk">
   insert into walk(wname)
   values (#{wname}) 
 </insert>
 
-<!-- 산책 장소 개수  -> 반경 설정 어떻게 할지 생각해보고 where절 잘 구해야함 -->
-<select id="selectWalkCnt" resultType="Integer">
+<!-- 산책 장소 개수  | 반경 설정 어떻게 할지 생각해보고 where절 잘 구해야함 -->
+<!-- 1위도는 133.33km 차이 -->
+<select id="getWalkCnt" resultType="Integer">
 	select count(*) from walk
+	where wlat between #{latitude}-
 </select>
 
 <!-- 산책 장소 댓글 입력 -->
+<!-- 테스트 완료 -->
 <insert id="insertComment">
-  insert into WComment(wno, user, wccon, wcimgs, wclike)
-  values #{wno}, #{user}, #{wccon}, #{wcimgs},#{wclike}
+  insert into walk_comment(wno, user, wccon, wcimgs, wclike)
+  values (#{walk.wno}, #{username}, #{wccon}, ifnull(#{wcimgs},''), #{wclike})
 </insert>
 
+<!-- 댓글 달고 난 다음에 해당 장소의  이름으로 댓글 개수 업데이트 -->
+<update id="updateWlikeCnt">
+	update from walk
+	set wccount
+</update>
+
+<!-- 댓글 달고 난 다음에 해당 장소의  이름으로 발바닥 개수 업데이트 -->
+<!-- 해당 장소의 like가 1인 댓글의 개수  -->
+<update id="updateWCCnt">
+	update from walk
+	set wccount=(count wno
+				 from walk_comment
+				 where wname=#{wname} and wclike=1)
+    where wname=#{wname}
+</update>
+<!-- 산책 장소 이름으로 목록 정보(장소명, 댓글 수, 발바닥 수) 불러오기 -->
+<!-- 테스트 완료 -->
+<select id="getWalkList" resultType="WalkVO">
+	select w.wno, w.wname, wlat, wlng, count(c.wcno) as wccount, sum(c.wclike) as wlikecount
+	from walk w join walk_comment c
+	on w.wno = c.wno 
+	where w.wname=#{wname}
+	
+</select>
+
 <!-- 특정 산책 장소 정보 이름으로 불러오기 -->
-<select id="selectWalk" resultType="WalkVO">
+<select id="getWalk" resultType="WalkVO">
 	select * from walk
 	where wname=#{wname}
 </select>
 
-<!-- 산책 장소 이름으로 목록 정보(장소명, 댓글 수, 발바닥 수) 불러오기 -->
-<select id="selectWalkList" resultType="WalkVO">
-	select w.name, count(select wno
-	                     from walk_comment
-	                     where wno = (select wno
-	                                  from walk
-	                                  where wname=#{wname})
-	                     ), count(select wcno
-	                              from walk_comment
-	                              where wclike=1)
-	from walk w join walk_comment c
-	on w.wno = c.wno 
-	order by 
-	
-</select>
-
 <!-- 특정 산책 장소 댓글 목록 불러오기 -->
-<select id="selectWCommentList" resultType="WalkCommentVO">
+<select id="getCommentList" resultType="WalkCommentVO">
 </select>
 
 <!-- 산책 장소 댓글 수정 -->

@@ -26,6 +26,12 @@
 		};
 
 		var map = new kakao.maps.Map(container, options);
+		
+		var positions = [
+			
+			
+		]
+		
 	</script>
 <!-- 카카오 지도 끝 -->
 
