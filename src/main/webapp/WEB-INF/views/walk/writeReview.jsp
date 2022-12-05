@@ -52,12 +52,7 @@ $(document).ready(function(){
 			type: 'POST',
 			dataType: 'json',
 			success: function(result) {
-				console.log(result);
-// 				showUploadResult(result);
-			},
-			error: function(result) {
-				alert("실패");
-				console.log(result);
+				alert("uploaded");
 			}
 		}); // ajax
 		

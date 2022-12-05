@@ -50,8 +50,8 @@ public class AjaxController {
 		log.info("업로드 위치: "+uploadPath );
 		// 해당 폴더가 없을 경우 폴더 생성
 		if(uploadPath.exists()==false) {
-			uploadPath.mkdir();
-			log.info(uploadPath+"패스 생성");
+			uploadPath.mkdirs();
+			log.info(uploadPath+" 패스 생성");
 		}
 		// 업로드한 연/월/일로 폴더 생성하기 끝 --------------
 		
@@ -69,9 +69,9 @@ public class AjaxController {
 //			File saveFile = new File(uploadFolder, uploadFileName);
 			// 연/월/일 폴더 만들어서 저장
 			File saveFile = new File(uploadPath, uploadFileName);
-			
 			try {
 				multi.transferTo(saveFile);
+				log.info("파일 저장 완료");
 			} catch (Exception e) {
 				log.error(e.getMessage());
 				// TODO: handle exception
