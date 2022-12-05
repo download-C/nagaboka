@@ -3,9 +3,9 @@ package com.nagaboka.domain;
 import lombok.Data;
 
 @Data
-public class AuthVO {
+public class UserAuthVO {
 	
-	private String user_id;
+	private String u_id;
 	private String auth;
 	
 }

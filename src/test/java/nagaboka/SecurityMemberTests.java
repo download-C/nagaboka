@@ -15,8 +15,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.nagaboka.domain.AuthVO;
-import com.nagaboka.domain.MemberVO;
+import com.nagaboka.domain.UserVO;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration({
@@ -36,13 +35,13 @@ public class SecurityMemberTests {
 	@Inject
 	private SqlSession session;
 	
-	final static String NAMESPACE = "com.nagaboka.mapper.MemberMapper";
+	final static String NAMESPACE = "com.nagaboka.mapper.UserMapper";
 	// 멤버변수 끝 =========================
 	
 	
-//	@Test   ㅇㅋ
-	public void insertMemberTest() throws Exception {
-		log.info("(∩^o^)⊃━☆ insertMemberTest  실행됨");
+//	@Test   // ㅇㅋ
+	public void insertUserTest() throws Exception {
+		log.info("(∩^o^)⊃━☆ insertUserTest  실행됨");
 		
 		// 마이바티스 뭐 이런 거 안 쓰고,, 일단 연결 잘 되나 테스트~
 		Connection con = null;
@@ -50,7 +49,7 @@ public class SecurityMemberTests {
 		
 		for(int i = 0; i < 10; i++) {
 			con = ds.getConnection();
-			String sql = "insert into nagaboka.member(user_id, user_pw, user_name) "
+			String sql = "insert into nagaboka.user(u_id, u_pw, u_name) "
 						+ "values(?, ?, ?)";
 			pstmt = con.prepareStatement(sql);
 			
@@ -74,11 +73,11 @@ public class SecurityMemberTests {
 			
 		} // for
 		
-	} // insertMemberTest()
+	} // insertuserTest()
 	
 	
 	
-//	@Test   ㅇㅋ
+//	@Test   // ㅇㅋ
 	public void 인증정보테이블채우기() throws Exception {
 		log.info("(∩^o^)⊃━☆ 인증정보테이블채우기  호출됨");
 
@@ -87,7 +86,7 @@ public class SecurityMemberTests {
 		
 		for(int i = 0; i < 10; i++) {
 			con = ds.getConnection();
-			String sql = "insert into member_auth(user_id, auth) "
+			String sql = "insert into user_auth(u_id, auth) "
 						+ "values(?, ?)";
 			pstmt = con.prepareStatement(sql);
 
@@ -107,18 +106,18 @@ public class SecurityMemberTests {
 	
 	
 	
-//	@Test   ㅇㅋ
-	public void getMemberTest() throws Exception {
-		log.info("(∩^o^)⊃━☆ getMemberTest  호출됨");
+	@Test   // ㅇㅋ
+	public void getUserTest() throws Exception {
+		log.info("(∩^o^)⊃━☆ getUserTest  호출됨");
 		
-		String user_id = "user0";
-		MemberVO vo = session.selectOne(NAMESPACE+".getMember", user_id);
-		log.info("(∩^o^)⊃━☆ getMemberTest  가져온 횐 정보: " + vo);
+		String u_id = "admin9";
+		UserVO vo = session.selectOne(NAMESPACE+".getUser", u_id);
+		log.info("(∩^o^)⊃━☆ getUserTest  가져온 횐 정보: " + vo);
 		
 		vo.getAuthList()
-		.forEach(authVO -> log.info("(∩^o^)⊃━☆ getMemberTest  MemberVO -> " + authVO));
+		.forEach(userAuthVO -> log.info("(∩^o^)⊃━☆ getUserTest  UserVO -> " + userAuthVO));
 		
-	} // getMemberTest()
+	} // getUserTest()
 
 	
 	
