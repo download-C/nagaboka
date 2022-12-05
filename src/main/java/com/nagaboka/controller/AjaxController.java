@@ -5,6 +5,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.UUID;
 
 import javax.inject.Inject;
 
@@ -64,6 +65,10 @@ public class AjaxController {
 			// 앞에서 .까지 잘라서 확장자를 제외한 파일명만 넣기
 			uploadFileName = uploadFileName.substring(uploadFileName.lastIndexOf("\\")+1);
 			log.info("파일 이름: "+uploadFileName);
+			
+			// 중복 방지를 위한 "랜덤이름_원래이름" 생성
+			UUID uuid = UUID.randomUUID();
+			uploadFileName = uuid.toString()+"_"+uploadFileName;
 			
 			// 특정 폴더 하나에 저장
 //			File saveFile = new File(uploadFolder, uploadFileName);
