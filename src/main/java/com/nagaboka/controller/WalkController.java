@@ -42,14 +42,15 @@ public class WalkController {
 		List<WalkVO> walkList = service.getWalkList(latitude, longitude);
 	}
 	
-	// http://localhost:8088/walk/writeReview
-	@GetMapping(value="/writeReview")
-	public void writeWalkGET() throws Exception{
+	// http://localhost:8088/walk/write
+	@GetMapping(value="/write")
+	public String writeWalkReviewGET() throws Exception{
 		log.info("♡♡♡♡♡♡♡♡♡♡walkWriateGET(walk) 호출");
+		return "/walk/writeReview";
 	}
 	
-	@PostMapping(value="/writeReview") 
-	public void writeWalkPOST(WalkVO walk, HttpServletRequest request) {
+	@PostMapping(value="/write") 
+	public void writeWalkReviewPOST(WalkVO walk, HttpServletRequest request) {
 		log.info("♡♡♡♡♡♡♡♡♡♡walkWriatePOST(walk) 호출");
 		String user_id = (String)session.getAttribute("user_id");
 
