@@ -2,7 +2,7 @@ package com.nagaboka.persistence;
 
 import java.util.List;
 
-import com.nagaboka.domain.WalkVO;
+import com.nagaboka.domain.walk.WalkVO;
 
 public interface WalkDAO {
 

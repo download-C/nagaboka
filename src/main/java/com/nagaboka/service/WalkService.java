@@ -2,7 +2,7 @@ package com.nagaboka.service;
 
 import java.util.List;
 
-import com.nagaboka.domain.WalkVO;
+import com.nagaboka.domain.walk.WalkVO;
 
 public interface WalkService {
 
