@@ -32,11 +32,11 @@ public class WalkController {
 	
 	// http://localhost:8088/walk/walkMap
 	@RequestMapping(value="/walkMap", method = RequestMethod.GET)
-	public String walkMapGET()throws Exception {
+	public void walkMapGET()throws Exception {
 		log.info("1. controller - walkMapGET()");
 		// 임시 위도 경도 -> 로그인한 회원의 DB에서 가져올 예정
-//		double latitude = 35.172661;
-//		double longitude = 129.108575;
+		double latitude = 35.172661;
+		double longitude = 129.108575;
 		
 		// 회원이 입력한 위도 및 경도를 기반으로 한 산책 장소 목록 가져오기 
 
