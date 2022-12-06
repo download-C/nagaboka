@@ -4,14 +4,38 @@ import lombok.Data;
 
 @Data
 public class PageVO {
-	private String pageNum;		// 현재 보고있는 페이지
-	private int pageSize;		// 페이지 하나에 보여지는 글 개수
-	private int pageBlock;		// 화면 아래에 한 번에 이동할 수 있는 페이지 개수
-	private int CurrentPage;	// 현재 보고있는 페이지
-	private int startPage;		// 현재 페이지에서 블록 첫 페이지 -> (endPage-pageBlock)+1
-	private int endPage;		// 현재 페이지에서 블록 끝 페이지 -> ((page/pageBlock)+1)*pageBlock
-	private int pageCount;		// 뭐더라
-	private int startRow;		// DB에서 현 페이지 맨 처음에 나올 거
-	private int endRow;			// DB에서 현 페이지 젤 마지막에 나올 거
-	private String search;      // 검색어
+		
+	private int page; // 페이지
+	private int perPageNum; // 한번에 보여줄 페이지 수
+
+	public PageVO() {
+		this.page = 1;
+		this.perPageNum = 10;
+	}
+
+	public void setPage(int page) {
+		if (page <= 0) { 
+			this.page = 1; 
+			return; 
+		}
+		this.page = page;
+	}
+			
+	public int getPerPageNum() {
+		return perPageNum;
+	}
+
+	public void setPerPageNum(int perPageNum) {
+		if (perPageNum < 10 || perPageNum > 100) {
+			this.perPageNum = 10;
+			return;
+		}
+		this.perPageNum = perPageNum;
+	}
+
+	public int getPageStart() {
+
+		return (this.page - 1) * perPageNum;
+	}
+			
 }

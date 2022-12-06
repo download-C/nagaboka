@@ -10,12 +10,14 @@ import javax.servlet.http.HttpSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.nagaboka.domain.PageMakerVO;
 import com.nagaboka.domain.PageVO;
 import com.nagaboka.domain.walk.WalkReviewVO;
 import com.nagaboka.domain.walk.WalkVO;
@@ -97,12 +99,22 @@ public class WalkController {
 	
 	// http://localhost:8088/walk/walkReviewList
 	@GetMapping(value="/walkReviewList")
-	public void walkReviewListGET(PageVO vo) throws Exception {
+	public void walkReviewListGET(PageVO vo, WalkVO walk, Model model) throws Exception {
 		log.info("walkReviewListGET() 호출");
+		// 페이징 처리 하단부 정보 저장
+		PageMakerVO pm = new PageMakerVO();
+		pm.setVo(vo);
 		
-		List<WalkReviewVO> reviewList = new ArrayList<>();
+		int cnt = service.getWalkReviewCnt(walk);
+		log.info(walk.getW_name()+" 리뷰 개수: "+cnt);
 		
-		reviewList = service.getReviewList(vo);
+		pm.setTotalCnt(cnt);
+		model.addAttribute("pm", pm);
+		log.info("pm으로 페이징 처리 완료");
+		
+		List<WalkReviewVO> walkReviewList = service.getWalkReviewList(pm);
+		model.addAttribute("walkReviewList", walkReviewList);
+		log.info(walk.getW_name()+" 리뷰 목록 부르기 성공");
 	}
 	
 }

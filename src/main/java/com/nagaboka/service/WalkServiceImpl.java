@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import com.nagaboka.domain.PageMakerVO;
 import com.nagaboka.domain.PageVO;
 import com.nagaboka.domain.walk.WalkReviewVO;
 import com.nagaboka.domain.walk.WalkVO;
@@ -39,8 +40,13 @@ public class WalkServiceImpl implements WalkService{
 	}
 
 	@Override
-	public List<WalkReviewVO> getReviewList(PageVO vo) throws Exception {
-		return null;
+	public List<WalkReviewVO> getWalkReviewList(PageMakerVO pm) throws Exception {
+		return dao.getWalkReviewList(pm);
+	}
+
+	@Override
+	public int getWalkReviewCnt(WalkVO walk) throws Exception {
+		return dao.getWalkReviewCnt(walk);
 	}
 
 	

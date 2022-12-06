@@ -15,13 +15,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	
 	<!-- 산책 장소 댓글 resultMap -->
 	
-	<resultMap type="WalkReviewVO" id="wron">
-		<result property="wrno" column="wrno"/>
-		<result property="wrregdate" column="wrregdate"/>
-		<result property="wrcon" column="wrcon"/>
-		<result property="wrimgs" column="wrimgs"/>
-		<result property="wrlike" column="wrlike"/>
-		<collection property="walk" resultMap="wak" />
+	<resultMap type="WalkReviewVO" id="review">
+		<result property="wr_no" column="wr_no"/>
+		<result property="wr_regdate" column="wr_regdate"/>
+		<result property="wr_con" column="wr_con"/>
+		<result property="wr_imgs" column="wr_imgs"/>
+		<result property="wr_like" column="wr_like"/>
+		<collection property="walk" resultMap="walk" />
 		<collection property="user" resultMap="user" />
 	</resultMap>
 	
@@ -38,7 +38,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	
 	<!-- 산책 장소 최초 입력 -->
 	<!-- 테스트 완료 -->
-	<insert id="insertWalk">
+	<insert id="writeWalk">
 	  insert into walk(w_name, w_lat, w_lng)
 	  values (#{w_name}, #{w_lat}, #{w_lng}) 
 	</insert>
@@ -49,21 +49,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		select count(w_no) from walk
 	</select>
 	
-	<!-- 산책 장소 댓글 입력 -->
-	<!-- 테스트 완료 -->
-	<insert id="writeWalkReview">
-	  insert into walk_review(w_no, u_id, wr_con, wr_imgs, wr_like)
-	  values (#{walk.w_no}, #{u_id}, #{wr_con}, ifnull(#{wr_imgs},''), #{wr_like})
-	</insert>
-	
-	<!-- 해당 장소의 like가 1(좋아요)인 댓글의 개수  -->
-	<update id="updateWRCnt">
-		update from walk
-		set wr_count=(count w_no
-					 from walk_review
-					 where w_name=#{w_name} and wr_like=1)
-	    where w_name=#{w_name}
-	</update>
+	<!-- 특정 산책 장소 정보 이름으로 불러오기 -->
+	<select id="getWalk" resultType="WalkVO">
+		select * from walk
+		where w_name=#{w_name}
+	</select>
 	
 	<!-- 산책 장소 이름으로 목록 정보(장소명, 댓글 수, 발바닥 수) 불러오기 -->
 	<!-- 테스트 완료 -->
@@ -71,19 +61,30 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		select w.w_no, w.w_name, w_lat, w_lng, count(c.wr_no) as wr_count, 
 			   sum(c.wr_like) as w_likecount
 		from walk w join walk_review c
-		on w.w_no = c.w_no 
-	
+		on w.w_no = c.w_no 	
 	</select>
 	
-	<!-- 특정 산책 장소 정보 이름으로 불러오기 -->
-	<select id="getWalk" resultType="WalkVO">
-		select * from walk
-		where w_name=#{w_name}
+	<!-- 산책 장소 댓글 입력 -->
+	<!-- 테스트 완료 -->
+	<insert id="writeWalkReview">
+	  insert into walk_review(w_no, u_id, wr_con, wr_imgs, wr_like)
+	  values (#{walk.w_no}, #{u_id}, #{wr_con}, ifnull(#{wr_imgs},''), #{wr_like})
+	</insert>
+	
+	<!-- 해당 장소의 댓글 개수  -->
+	<select id="getWalkReviewCnt" resultType="Integer">
+		select count(wr_no) from walk_review
+		where w_no = #{w_no}
 	</select>
 	
 	<!-- 특정 산책 장소 댓글 목록 불러오기 -->
-	<select id="getReviewList" resultType="WalkReviewVO">
-		select * from walk_review
+	<select id="getWalkReviewList" resultType="WalkReviewVO">
+		select w.w_name, u.u_name, r.wr_regdate, r.wr_con, r.wr_imgs, r.wr_like
+		from walk w join walk_review r
+		on w.w_no = r.w_no
+		join user u
+		on u.u_id = r.u_id 
+		where w.w_name=#{w_name}
 		order by wr_no desc
 		limit #{startRow}, #{pageSize}
 	</select>

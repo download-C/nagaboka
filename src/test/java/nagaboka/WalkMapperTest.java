@@ -14,8 +14,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import com.nagaboka.domain.PageVO;
 import com.nagaboka.domain.walk.WalkReviewVO;
 import com.nagaboka.domain.walk.WalkVO;
+import com.nagaboka.service.WalkService;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -27,6 +29,9 @@ public class WalkMapperTest {
 	
 	@Inject
 	SqlSession session;
+	
+	@Inject
+	WalkService service;
 
 	final static String NAMESPACE = "com.nagaboka.mapper.WalkMapper";
 	
@@ -40,9 +45,9 @@ public class WalkMapperTest {
 		log.info("♡♡♡♡♡♡♡♡♡♡insertWalk() 테스트");
 		
 		WalkVO walk = new WalkVO();
-		walk.setWname("삼락생태공원");
-		walk.setWlat(35.162285);
-		walk.setWlng(128.971192);
+		walk.setW_name("삼락생태공원");
+		walk.setW_lat(35.162285);
+		walk.setW_lng(128.971192);
 		
 		
 		
@@ -66,10 +71,10 @@ public class WalkMapperTest {
 		
 
 		WalkReviewVO review = new WalkReviewVO();
-		review.setUsername("Rang2");
+		review.setU_id("Rang2");
 		review.setWalk(walk);
-		review.setWccon("낙동강 똥바람이 불지만 좋네요");
-		review.setWclike(true);
+		review.setWr_con("낙동강 똥바람이 불지만 좋네요");
+		review.setWr_like(true);
 		
 		session.insert(NAMESPACE+".insertreview", review);
 		
@@ -95,6 +100,26 @@ public class WalkMapperTest {
 		map.put("latitude", latitude);
 		map.put("longitude", longitude);
 		log.info("♡♡♡♡♡♡♡♡♡♡  글 개수 :"+session.selectOne(NAMESPACE+".getWalkCnt"), map);
+	}
+	
+	@Test
+	public void getWalkReviewList() throws Exception {
+		log.info("♡♡♡♡♡♡♡♡♡♡ getWalkReviewList() 호출");
+		
+		PageVO vo = new PageVO();
+		
+		int pageSize = 5;
+		int currentPage = 1;
+		
+		WalkVO walk = session.selectOne(NAMESPACE+".getWalk", "광안리해수욕장");
+		
+		log.info(walk.getW_name()+" 정보 가져오기 성공");
+		// 전체 글 개수
+		int cnt = session.selectOne(NAMESPACE+".getWalkReviewCnt", walk);
+		
+
+		
+		session.selectList(NAMESPACE+".getWalkReviewList", vo);
 	}
 	
 }
