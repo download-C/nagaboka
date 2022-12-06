@@ -25,6 +25,34 @@
 .uploadResult ul li img {
 	width: 100px;
 }
+
+.uploadResult ul li span {
+	color: white;
+}
+
+.bigPictureWrapper {
+	position: absolute;
+	display: none;
+	justify-content: center;
+	align-items: center;
+	top:0%;
+	width: 100%;
+	height: 100%;
+ 	background-color: rgba(0,0,0,0.6); 
+/* 	background-color: gray; */
+	z-index: 100;
+}
+
+.bigPicture {
+	position: relative;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.bigPicture img {
+	width: 80%;
+}
 </style>
 
 <!-- 파일 확장자와 크기 확인 함수 -->
@@ -72,7 +100,10 @@ function showUploadedFile(uploadResultArr) {
 	$(uploadResultArr).each(function(i, obj){
 		// 첨부파일의 섬네일용 경로 및 파일명 불러와서 띄우기
 		var fileCallPath = encodeURIComponent(obj.uploadPath+"/s_"+obj.uuid+"_"+obj.fileName);
-		str += "<li><img src='/ajax/display?fileName="+fileCallPath+"'></li>";
+		// 원래 파일 경로 불러와서 자르기
+		var originPath = obj.uploadPath+"\\"+obj.uuid+"_"+obj.fileName; 
+		originPath = originPath.replace(new RegExp(/\\/g),"/");
+		str += "<li><a href=\"javascript:showImage(\'"+originPath+"\')\"><img src='/ajax/display?fileName="+fileCallPath+"'></a></li>";
 	});
 
 	$(".uploadResult ul").append(str);
@@ -80,6 +111,16 @@ function showUploadedFile(uploadResultArr) {
 }
 </script>
 
+<!-- 썸네일 클릭 시 원본 파일 보여주기 -->
+<script>
+function showImage(fileCallPath) {
+// 	alert(fileCallPath);
+	$(".bigPictureWrapper").css("display", "flex").show();
+	$(".bigPicture").html("<img src='/ajax/display?fileName="+encodeURI(fileCallPath)+"'>").animate({width: '100%', height: '100%'}, 1000);
+}
+</script>
+
+<!-- document -->
 <script>
 $(document).ready(function(){
 	
@@ -91,10 +132,10 @@ $(document).ready(function(){
 		alert("작성 버튼 클릭");
 	});
 	
-	// <input type='file'> 초기화하기 ==============================
+// <input type='file'> 초기화하기 ==============================
 	var cloneObj = $(".uploadDiv").clone();
 	
-	// 첨부파일 들어왔을 때 자동으로 확장자 및 파일 사이즈 확인 후 업로드 ===============
+// 첨부파일 들어왔을 때 자동으로 확장자 및 파일 사이즈 확인 후 업로드 ===============
 	$("input[type='file']").change(function(e){
 		var formData = new FormData();
 		var inputFile = $("input[name='uploadFile']");
@@ -114,23 +155,30 @@ $(document).ready(function(){
 			type: 'POST',
 			dataType: 'json',
 			success: function(result) {
-				alert("업로드 성공");
+// 				alert("업로드 성공");
 				// 업로드 성공한 파일 정보들 jsonList 형태로 콘솔에 찍기
 				console.log(result);
 				
 				// 업로드 성공한 파일명 띄워주기
 				showUploadedFile(result);
-				alert("파일명 띄우기 성공");
+// 				alert("파일명 띄우기 성공");
 				
 				// 업로드 성공 후 첨부파일 부분 초기화
 				$(".uploadDiv").html(cloneObj.html());
-				alert("초기화 성공");
+// 				alert("초기화 성공");
 				// 업로드된 이미지 썸네일 띄우기
 				// 1. 파일 이름 띄우기
 			}
 		}); // ajax
-		
 	}); // input file
+	
+// 원본파일 클릭 시 사라지게 하기 =================================
+	$(".bigPictureWrapper").on("click", function(e){
+		$(".bigPicture").animate({width:'0%',height:'0%'}, 1000);
+		setTimeout(()=> {
+			$(this).hide();
+		}, 1000);
+	});
 }); // document
 </script>
 <!-- 본문 작성 위치 시작 -->
@@ -161,6 +209,12 @@ $(document).ready(function(){
 		 
 		</ul>
 	</div>
+	<!-- 썸네일 클릭 시 원본 파일 보여주는 영역 -->
+	<div class="bigPictureWrapper">
+		<div class="bigPicture">
+		</div>
+	</div>
+
 	<hr>
 	<button type="submit">작성</button><button id="reset">초기화</button>
 	
