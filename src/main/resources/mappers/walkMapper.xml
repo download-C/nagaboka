@@ -78,7 +78,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	select w.wno, w.wname, wlat, wlng, count(c.wrno) as wrcount, sum(c.wrlike) as wlikecount
 	from walk w join walk_comment c
 	on w.wno = c.wno 
-	where w.wname=#{wname}
 </select>
 
 <!-- 특정 산책 장소 정보 이름으로 불러오기 -->

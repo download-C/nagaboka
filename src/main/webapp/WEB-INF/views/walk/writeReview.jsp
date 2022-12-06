@@ -53,6 +53,10 @@
 .bigPicture img {
 	width: 80%;
 }
+
+.btn-warning {
+	backgroun-color: red;
+}
 </style>
 
 <!-- 파일 확장자와 크기 확인 함수 -->
@@ -103,9 +107,14 @@ function showUploadedFile(uploadResultArr) {
 		// 원래 파일 경로 불러와서 자르기
 		var originPath = obj.uploadPath+"\\"+obj.uuid+"_"+obj.fileName; 
 		originPath = originPath.replace(new RegExp(/\\/g),"/");
-		str += "<li><div>";
+		str += "<li><div>";		
+		str += "<button type='button' ";
+		str += "data-file=\'"+fileCallPath+"\' ";
+		str += "data-type='image'";
+		str += "data-uuid='"+obj.uuid+"'";
+		str += "data-fileName='"+obj.fileName+"'";
+		str += "class='btn btn-warning btn-circle'>X</button>";
 		str += "<a href=\"javascript:showImage(\'"+originPath+"\')\"><img src='/ajax/display?fileName="+fileCallPath+"'></a>";
-		str += "<button type='button' data-file=\'"+fileCallPath+"\' data-type='image'>X</button>";
 		str += "</div></li>";
 	});
 
@@ -135,6 +144,21 @@ $(document).ready(function(){
 	$("button[type='submit']").on("click", function(e){
 		e.preventDefault();
 		alert("작성 버튼 클릭");
+		
+		var str = "";
+		
+		$(".uploadRsult ul li").each(function(i, obj){
+			var jObj = $(obj);
+			console.dir(jObj);
+			// 파일명, uuid, 저장 경로, 타입을 hidden으로 숨겨서 배열에 담음
+			str += "<input type='hidden' name='attachList["+i+"].fileName' value='"+jObj.data("fileName")+"'>";
+			str += "<input type='hidden' name='attachList["+i+"].uuid' value='"+jObj.data("uuid")+"'>";
+			str += "<input type='hidden' name='attachList["+i+"].uploadPath' value='"+jObj.data("path")+"'>";
+			str += "<input type='hidden' name='attachList["+i+"].fileType' value='"+jObj.data("type")+"'>";			
+		}); // each
+		
+		// 위의 each에서 추가한 str을 붙인 뒤 submit하기
+		formObj.append().submit();
 	});
 	
 // <input type='file'> 초기화하기 ==============================
@@ -202,7 +226,7 @@ $(document).ready(function(){
 			dataType: 'text',
 			type: 'POST',
 			success: function(result) {
-				alert(result);
+// 				alert(result);
 				targetLi.remove();
 			}
 		}); // ajax
@@ -210,12 +234,16 @@ $(document).ready(function(){
 	
 }); // document
 </script>
+
+
 <!-- 본문 작성 위치 시작 -->
 
 <h1> walk/writeReview.jsp </h1>
 	
 	<!-- 산책 장소 후기 남기기  폼 -->
 	<form role="form" action="" onsubmit="return false" enctype="multipart/form-data">
+		<!-- 로그인 아이디 -->
+		<input type="hidden" name="u_id" value="admin">
 		<!-- 산책 장소 이름 정보  -->
 		<input type="hidden" name="wname" value="${wname }">
 		
