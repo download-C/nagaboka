@@ -108,13 +108,13 @@ function showUploadedFile(uploadResultArr) {
 		var originPath = obj.uploadPath+"\\"+obj.uuid+"_"+obj.fileName; 
 		originPath = originPath.replace(new RegExp(/\\/g),"/");
 		str += "<li><div>";		
-		str += "<button type='button' ";
+		str += "<a href=\"javascript:showImage(\'"+originPath+"\')\"><img src='/ajax/display?fileName="+fileCallPath+"'></a>";
+		str += "<button type='button' data-path='"+obj.uploadPath+"'";
 		str += "data-file=\'"+fileCallPath+"\' ";
 		str += "data-type='image'";
 		str += "data-uuid='"+obj.uuid+"'";
 		str += "data-fileName='"+obj.fileName+"'";
 		str += "class='btn btn-warning btn-circle'>X</button>";
-		str += "<a href=\"javascript:showImage(\'"+originPath+"\')\"><img src='/ajax/display?fileName="+fileCallPath+"'></a>";
 		str += "</div></li>";
 	});
 
@@ -129,7 +129,7 @@ function showImage(fileCallPath) {
 // 	alert(fileCallPath);
 	$(".bigPictureWrapper").css("display", "flex").show();
 	$(".bigPicture").html("<img src='/ajax/display?fileName="
-			+encodeURI(fileCallPath)+"'>")
+			+encodeURI(fileCallPath.split("-"))+"'>")
 			.animate({width: '100%', height: '100%'}, 1000);
 }
 </script>
@@ -137,29 +137,6 @@ function showImage(fileCallPath) {
 <!-- document -->
 <script>
 $(document).ready(function(){
-	
-	// 버튼 클릭 시 서브밋
-	var formObj = $("form[role='form']");
-	
-	$("button[type='submit']").on("click", function(e){
-		e.preventDefault();
-		alert("작성 버튼 클릭");
-		
-		var str = "";
-		
-		$(".uploadRsult ul li").each(function(i, obj){
-			var jObj = $(obj);
-			console.dir(jObj);
-			// 파일명, uuid, 저장 경로, 타입을 hidden으로 숨겨서 배열에 담음
-			str += "<input type='hidden' name='attachList["+i+"].fileName' value='"+jObj.data("fileName")+"'>";
-			str += "<input type='hidden' name='attachList["+i+"].uuid' value='"+jObj.data("uuid")+"'>";
-			str += "<input type='hidden' name='attachList["+i+"].uploadPath' value='"+jObj.data("path")+"'>";
-			str += "<input type='hidden' name='attachList["+i+"].fileType' value='"+jObj.data("type")+"'>";			
-		}); // each
-		
-		// 위의 each에서 추가한 str을 붙인 뒤 submit하기
-		formObj.append().submit();
-	});
 	
 // <input type='file'> 초기화하기 ==============================
 	var cloneObj = $(".uploadDiv").clone();
@@ -232,6 +209,33 @@ $(document).ready(function(){
 		}); // ajax
 	}); // uploadDelete
 	
+	// 버튼 클릭 시 form 태그 서브밋 ===================================
+	var formObj = $("form[role='form']");
+	
+	$("button[type='submit']").on("click", function(e){
+		e.preventDefault();
+		alert("작성 버튼 클릭");
+		
+		var str = "";
+		
+		$(".uploadResult ul li div button").each(function(i, obj){
+			var jObj = $(obj);
+			console.dir(jObj);
+			// 파일명, uuid, 저장 경로, 타입을 hidden으로 숨겨서 배열에 담음
+			str += "<input type='hidden' name='attachList["+i+"].fileName' value='"+jObj.data("filename")+"'>";
+			str += "<input type='hidden' name='attachList["+i+"].uuid' value='"+jObj.data("uuid")+"'>";
+			str += "<input type='hidden' name='attachList["+i+"].uploadPath' value='"+jObj.data("path")+"'>";
+			str += "<input type='hidden' name='attachList["+i+"].fileType' value='"+jObj.data("type")+"'>";			
+		}); // each
+		
+		// 위의 each에서 추가한 str을 붙인 뒤 submit하기
+		formObj.attr('action', '/walk/write');
+		formObj.attr('onsubmit', 'return true');
+		formObj.attr('method','post');
+		formObj.append(str);
+		formObj.submit();
+	});
+	
 }); // document
 </script>
 
@@ -242,10 +246,10 @@ $(document).ready(function(){
 	
 	<!-- 산책 장소 후기 남기기  폼 -->
 	<form role="form" action="" onsubmit="return false" enctype="multipart/form-data">
-		<!-- 로그인 아이디 -->
-		<input type="hidden" name="u_id" value="admin">
+<!-- 		<!-- 로그인 아이디 => --> -->
+<!-- 		<input type="hidden" name="u_id" value="admin">  -->
 		<!-- 산책 장소 이름 정보  -->
-		<input type="hidden" name="wname" value="${wname }">
+		<input type="text" name="wname" value="광안리해수욕장">
 		
 		<!-- 리뷰 내용 -->
 		<textarea name="wrcon" placeholder="리뷰 내용"></textarea>

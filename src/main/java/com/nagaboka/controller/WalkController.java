@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.nagaboka.domain.walk.WalkReviewVO;
 import com.nagaboka.domain.walk.WalkVO;
@@ -51,12 +52,51 @@ public class WalkController {
 		return "/walk/writeReview";
 	}
 	
+	// 테스트 완료
 	@PostMapping(value="/write") 
-	public void writeWalkReviewPOST(WalkVO walk, HttpServletRequest request) {
+	public String  writeWalkReviewPOST(WalkReviewVO review, 
+			HttpServletRequest request, RedirectAttributes rttr) throws Exception {
 		log.info("♡♡♡♡♡♡♡♡♡♡walkWriatePOST(walk) 호출");
-		String user_id = (String)session.getAttribute("user_id");
-
 		
+		String wname = request.getParameter("wname");
+		log.info("♡♡♡♡♡♡♡♡♡♡"+wname+" 정보 불러오기 ");
+		
+		// 들어온 장소 이름으로 장소 정보 가져와 리뷰에 담기
+		WalkVO walk = service.getWalk(wname);
+		log.info("♡♡♡♡♡♡♡♡♡♡"+wname+" 정보: "+walk);
+		review.setWalk(walk);
+		
+		log.info("♡♡♡♡♡♡♡♡♡♡ 작성한 리뷰 정보: "+review);
+		
+		// 첨부 이미지가 있을 때 정보 출력하기
+		if(review.getAttachList()!=null) {
+			review.getAttachList().forEach(attach -> log.info("파일 저장 경로: "+attach.toString()));
+			String wrimgs = "";
+			for(int i=0; i<review.getAttachList().size(); i++) {
+				wrimgs += review.getAttachList().get(i).toString();
+				wrimgs += "$";
+			}
+			log.info("♡♡♡♡♡♡♡♡♡♡첨부파일 $ 기준으로 붙이기: "+wrimgs.substring(0, wrimgs.length()-1));
+			// 맨 마지막 $ 빼고 set하기
+			review.setWrimgs(wrimgs.substring(0, wrimgs.length()-1));
+		}
+		
+		// 로그인 구현되면 이걸루 바꾸기~
+//		review.setU_id((String)session.getAttribute("u_id"));
+		review.setU_id("admin");
+		log.info("♡♡♡♡♡♡♡♡♡♡리뷰 정보: "+review);
+		
+		service.writeWalkReview(review);
+		
+		rttr.addFlashAttribute("msg1", "리뷰 작성 성공");
+		
+		return "redirect:/walk/walkReviewList";
+	}
+	
+	// http://localhost:8088/walk/walkReviewList
+	@GetMapping(value="/walkReviewList")
+	public void walkReviewListGET() throws Exception {
+		log.info("walkReviewListGET() 호출");
 	}
 	
 }

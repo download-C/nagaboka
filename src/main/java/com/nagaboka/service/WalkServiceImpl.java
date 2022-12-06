@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import com.nagaboka.domain.walk.WalkReviewVO;
 import com.nagaboka.domain.walk.WalkVO;
 import com.nagaboka.persistence.WalkDAO;
 
@@ -25,6 +26,19 @@ public class WalkServiceImpl implements WalkService{
 		
 		return dao.getWalkList(latitude, longitude);
 	}
+
+	@Override
+	public WalkVO getWalk(String wname) throws Exception {
+		return dao.getWalk(wname);
+	}
+
+	@Override
+	public void writeWalkReview(WalkReviewVO review) {
+		dao.writeWalkReview(review);
+	}
+
+	
+	
 	
 	
 }
