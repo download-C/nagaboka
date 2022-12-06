@@ -5,7 +5,7 @@ import java.sql.Timestamp;
 import lombok.Data;
 
 @Data
-public class WalkCommentVO {
+public class WalkReviewVO {
 	private int wcno;
 	private WalkVO walk;
 	private String username;

@@ -12,7 +12,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 </resultMap>
 
 <!-- 산책 장소 댓글 resultMap -->
-<resultMap type="WalkCommentVO" id="wcon">
+<resultMap type="WalkreviewVO" id="wcon">
 	<result property="wcno" column="wcno"/>
 	<result property="user" column="user"/>
 	<result property="wcregdate" column="wcregdate"/>
@@ -38,21 +38,20 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 <!-- 산책 장소 최초 입력 -->
 <!-- 테스트 완료 -->
 <insert id="insertWalk">
-  insert into walk(wname)
-  values (#{wname}) 
+  insert into walk(wname, wlat, wlng) 
+  values (#{wname}, #{wlat}, #{wlng})
 </insert>
 
 <!-- 산책 장소 개수  | 반경 설정 어떻게 할지 생각해보고 where절 잘 구해야함 -->
 <!-- 1위도는 133.33km 차이 -->
 <select id="getWalkCnt" resultType="Integer">
-	select count(*) from walk
-	where wlat between #{latitude}-
+	select count(wno) from walk
 </select>
 
 <!-- 산책 장소 댓글 입력 -->
 <!-- 테스트 완료 -->
-<insert id="insertComment">
-  insert into walk_comment(wno, user, wccon, wcimgs, wclike)
+<insert id="insertreview">
+  insert into walk_review(wno, user, wccon, wcimgs, wclike)
   values (#{walk.wno}, #{username}, #{wccon}, ifnull(#{wcimgs},''), #{wclike})
 </insert>
 
@@ -67,18 +66,19 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 <update id="updateWCCnt">
 	update from walk
 	set wccount=(count wno
-				 from walk_comment
+				 from walk_review
 				 where wname=#{wname} and wclike=1)
     where wname=#{wname}
 </update>
+
+
 <!-- 산책 장소 이름으로 목록 정보(장소명, 댓글 수, 발바닥 수) 불러오기 -->
 <!-- 테스트 완료 -->
 <select id="getWalkList" resultType="WalkVO">
 	select w.wno, w.wname, wlat, wlng, count(c.wcno) as wccount, sum(c.wclike) as wlikecount
-	from walk w join walk_comment c
+	from walk w join walk_review c
 	on w.wno = c.wno 
 	where w.wname=#{wname}
-	
 </select>
 
 <!-- 특정 산책 장소 정보 이름으로 불러오기 -->
@@ -88,14 +88,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 </select>
 
 <!-- 특정 산책 장소 댓글 목록 불러오기 -->
-<select id="getCommentList" resultType="WalkCommentVO">
+<select id="getreviewList" resultType="WalkreviewVO">
 </select>
 
 <!-- 산책 장소 댓글 수정 -->
-<update id="updateWComment">
+<update id="updateWreview">
 </update>
 
 <!-- 산책 장소 댓글 삭제 -->
-<delete id="deleteWComment">
+<delete id="deleteWreview">
 </delete>
 </mapper>
