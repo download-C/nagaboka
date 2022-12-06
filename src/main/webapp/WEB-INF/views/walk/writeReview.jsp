@@ -249,16 +249,16 @@ $(document).ready(function(){
 <!-- 		<!-- 로그인 아이디 => --> -->
 <!-- 		<input type="hidden" name="u_id" value="admin">  -->
 		<!-- 산책 장소 이름 정보  -->
-		<input type="text" name="wname" value="광안리해수욕장">
+		<input type="text" name="w_name" value="광안리해수욕장">
 		
 		<!-- 리뷰 내용 -->
-		<textarea name="wrcon" placeholder="리뷰 내용"></textarea>
+		<textarea name="wr_con" placeholder="리뷰 내용"></textarea>
 
 		<!-- 발바닥 모양 버튼 -->
 		<button type="button" onclick="changeImg()" style="border: none; background-color: transparent;">
 			<img id="pawImg" src="${pageContext.request.contextPath}/resources/img/heart-with-dog-paw-48(gray).png">
 		</button>
-		<input type="hidden" name="wrlike" id="paw" value=0>
+		<input type="hidden" name="wr_like" id="paw" value=0>
 	</form>
 	<hr>
 	<div class="uploadDiv">

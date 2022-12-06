@@ -1,5 +1,6 @@
 package com.nagaboka.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.nagaboka.domain.PageVO;
 import com.nagaboka.domain.walk.WalkReviewVO;
 import com.nagaboka.domain.walk.WalkVO;
 import com.nagaboka.service.WalkService;
@@ -58,12 +60,12 @@ public class WalkController {
 			HttpServletRequest request, RedirectAttributes rttr) throws Exception {
 		log.info("♡♡♡♡♡♡♡♡♡♡walkWriatePOST(walk) 호출");
 		
-		String wname = request.getParameter("wname");
-		log.info("♡♡♡♡♡♡♡♡♡♡"+wname+" 정보 불러오기 ");
+		String w_name = request.getParameter("w_name");
+		log.info("♡♡♡♡♡♡♡♡♡♡"+w_name+" 정보 불러오기 ");
 		
 		// 들어온 장소 이름으로 장소 정보 가져와 리뷰에 담기
-		WalkVO walk = service.getWalk(wname);
-		log.info("♡♡♡♡♡♡♡♡♡♡"+wname+" 정보: "+walk);
+		WalkVO walk = service.getWalk(w_name);
+		log.info("♡♡♡♡♡♡♡♡♡♡"+w_name+" 정보: "+walk);
 		review.setWalk(walk);
 		
 		log.info("♡♡♡♡♡♡♡♡♡♡ 작성한 리뷰 정보: "+review);
@@ -71,14 +73,14 @@ public class WalkController {
 		// 첨부 이미지가 있을 때 정보 출력하기
 		if(review.getAttachList()!=null) {
 			review.getAttachList().forEach(attach -> log.info("파일 저장 경로: "+attach.toString()));
-			String wrimgs = "";
+			String wr_imgs = "";
 			for(int i=0; i<review.getAttachList().size(); i++) {
-				wrimgs += review.getAttachList().get(i).toString();
-				wrimgs += "$";
+				wr_imgs += review.getAttachList().get(i).toString();
+				wr_imgs += "$";
 			}
-			log.info("♡♡♡♡♡♡♡♡♡♡첨부파일 $ 기준으로 붙이기: "+wrimgs.substring(0, wrimgs.length()-1));
+			log.info("♡♡♡♡♡♡♡♡♡♡첨부파일 $ 기준으로 붙이기: "+wr_imgs.substring(0, wr_imgs.length()-1));
 			// 맨 마지막 $ 빼고 set하기
-			review.setWrimgs(wrimgs.substring(0, wrimgs.length()-1));
+			review.setWr_imgs(wr_imgs.substring(0, wr_imgs.length()-1));
 		}
 		
 		// 로그인 구현되면 이걸루 바꾸기~
@@ -95,8 +97,12 @@ public class WalkController {
 	
 	// http://localhost:8088/walk/walkReviewList
 	@GetMapping(value="/walkReviewList")
-	public void walkReviewListGET() throws Exception {
+	public void walkReviewListGET(PageVO vo) throws Exception {
 		log.info("walkReviewListGET() 호출");
+		
+		List<WalkReviewVO> reviewList = new ArrayList<>();
+		
+		reviewList = service.getReviewList(vo);
 	}
 	
 }
