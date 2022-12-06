@@ -12,6 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.nagaboka.domain.walk.WalkReviewVO;
 import com.nagaboka.domain.walk.WalkVO;
@@ -30,14 +31,15 @@ public class WalkController {
 	private static final Logger log = LoggerFactory.getLogger(WalkController.class);
 	
 	// http://localhost:8088/walk/walkMap
-	@GetMapping(value="/walkMap")
-	public void walkMapGET() {
-		log.info("walk/walkMap 호출");
+	@RequestMapping(value="/walkMap", method = RequestMethod.GET)
+	public String walkMapGET()throws Exception {
+		log.info("1. controller - walkMapGET()");
 		// 임시 위도 경도 -> 로그인한 회원의 DB에서 가져올 예정
-		double latitude = 35.172661;
-		double longitude = 129.108575;
+//		double latitude = 35.172661;
+//		double longitude = 129.108575;
 		
 		// 회원이 입력한 위도 및 경도를 기반으로 한 산책 장소 목록 가져오기 
+
 		// 축척이 1km일 경우 반경 n 거리 안쪽일 때를 할까 생각 중
 		List<WalkVO> walkList = service.getWalkList(latitude, longitude);
 	}
@@ -56,6 +58,5 @@ public class WalkController {
 
 		
 	}
-	
 	
 }

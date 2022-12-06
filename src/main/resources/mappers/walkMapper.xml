@@ -7,14 +7,16 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
 <!-- 산책 장소 resultMap -->
 <resultMap type="WalkVO" id="walk">
-	<result property="wno" column="" />
-	<result property="wname" column="" />
+	<result property="wno" column="wno" />
+	<result property="wname" column="wname" />
+	<result property="wlat" column="wlat" />
+	<result property="wlng" column="wlng" />
 </resultMap>
 
 <!-- 산책 장소 댓글 resultMap -->
+
 <resultMap type="WalkReviewVO" id="wron">
 	<result property="wrno" column="wrno"/>
-	<result property="user" column="user"/>
 	<result property="wrregdate" column="wrregdate"/>
 	<result property="wrcon" column="wrcon"/>
 	<result property="wrimgs" column="wrimgs"/>
@@ -38,15 +40,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 <!-- 산책 장소 최초 입력 -->
 <!-- 테스트 완료 -->
 <insert id="insertWalk">
+
   insert into walk(wname, wlat, wlng)
   values (#{wname}, #{wlat}, #{wlng}) 
-</insert>
+
 
 <!-- 산책 장소 개수  | 반경 설정 어떻게 할지 생각해보고 where절 잘 구해야함 -->	
 <!-- 1위도는 133.33km 차이 -->
 <select id="getWalkCnt" resultType="Integer">
-	select count(*) from walk
-	where wlat between #{latitude}-
+	select count(wno) from walk
 </select>
 
 <!-- 산책 장소 댓글 입력 -->
@@ -54,7 +56,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 <insert id="insertReview">
   insert into walk_comment(wno, user, wrcon, wrimgs, wrlike)
   values (#{walk.wno}, #{username}, #{wrcon}, ifnull(#{wrimgs},''), #{wrlike})
-</insert>
+
 
 <!-- 댓글 달고 난 다음에 해당 장소의  이름으로 댓글 개수 업데이트 -->
 <update id="updateWlikeCnt">
@@ -78,6 +80,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	select w.wno, w.wname, wlat, wlng, count(c.wrno) as wrcount, sum(c.wrlike) as wlikecount
 	from walk w join walk_comment c
 	on w.wno = c.wno 
+
 </select>
 
 <!-- 특정 산책 장소 정보 이름으로 불러오기 -->

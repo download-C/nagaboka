@@ -17,6 +17,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import com.nagaboka.domain.walk.WalkReviewVO;
 import com.nagaboka.domain.walk.WalkVO;
 
+
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(
     locations = {"file:src/main/webapp/WEB-INF/spring/root-context.xml"})
@@ -39,7 +40,11 @@ public class WalkMapperTest {
 		log.info("♡♡♡♡♡♡♡♡♡♡insertWalk() 테스트");
 		
 		WalkVO walk = new WalkVO();
-		walk.setWname("광안리해수욕장");
+		walk.setWname("삼락생태공원");
+		walk.setWlat(35.162285);
+		walk.setWlng(128.971192);
+		
+		
 		
 		session.insert(NAMESPACE+".insertWalk", walk);
 		
@@ -49,23 +54,24 @@ public class WalkMapperTest {
 	
 //	@Test
 	public void selectWalkCnt() {
-		log.info("selectWalkCnt() 테스트");
-		log.info("♡♡♡♡♡♡♡♡♡♡장소 개수: "+session.selectOne(NAMESPACE+".selectWalkCnt"));
+		log.info("getWalkCnt() 테스트");
+		log.info("♡♡♡♡♡♡♡♡♡♡장소 개수: "+session.selectOne(NAMESPACE+".getWalkCnt"));
 	}
 	
 //	@Test
 	public void insertWCCon() throws Exception {
 		log.info("♡♡♡♡♡♡♡♡♡♡ insertWcon() 테스트");
 		
-		WalkVO walk = session.selectOne(NAMESPACE+".getWalk", "광안리해수욕장");
+		WalkVO walk = session.selectOne(NAMESPACE+".getWalk", "삼락생태공원");
 		
-		WalkReviewVO comment = new WalkReviewVO();
-		comment.setUser_id("admin");
-		comment.setWalk(walk);
-		comment.setWrcon("다녀오니까 좋았어여~");
-		comment.setWrlike(true);
+
+		WalkReviewVO review = new WalkReviewVO();
+		review.setUsername("Rang2");
+		review.setWalk(walk);
+		review.setWccon("낙동강 똥바람이 불지만 좋네요");
+		review.setWclike(true);
 		
-		session.insert(NAMESPACE+".insertComment", comment);
+		session.insert(NAMESPACE+".insertreview", review);
 		
 		log.info("♡♡♡♡♡♡♡♡♡♡ 댓글 남기기 완료");
 	}
@@ -73,13 +79,13 @@ public class WalkMapperTest {
 //	@Test
 	public void getWalkList() throws Exception {
 		log.info("♡♡♡♡♡♡♡♡♡♡ getWalkList() 호출");
-		WalkVO walk = session.selectOne(NAMESPACE+".getWalk", "광안리해수욕장");
+		WalkVO walk = session.selectOne(NAMESPACE+".getWalk", "삼락생태공원");
 		log.info("♡♡♡♡♡♡♡♡♡♡ 가져온 장소 정보: "+walk);
 		List<WalkVO> walkList = session.selectList(NAMESPACE+".getWalkList", walk);
 		log.info("♡♡♡♡♡♡♡♡♡♡ 리스트 목록 : "+walkList);
 	}
 	
-	@Test
+//	@Test
 	public void getWalkCnt() throws Exception {
 		log.info("♡♡♡♡♡♡♡♡♡♡ getWalkCnt() 호출");
 		
