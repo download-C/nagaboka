@@ -4,6 +4,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.net.URLDecoder;
 import java.nio.file.Files;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -56,7 +57,7 @@ public class AjaxController {
 	}
 	
 	// 파일의 확장자로 첨부파일이 그림인지 확인 후 image가 아닐 경우에는 false 반환
-	private boolean checkImageType(File file) {
+	private boolean checkImageType(File file) throws Exception{
 		try {
 			// 첨부파일이 있을 경우 해당 첨부파일의 확장자가 어떤 타입인지를 반환
 			// image/png, image/jpg 등등으로 반환됨~
@@ -146,7 +147,7 @@ public class AjaxController {
 	// 산책 리뷰 이미지 업로드 후 썸네일 출력
 	@GetMapping(value="/display")
 	@ResponseBody
-	public ResponseEntity<byte[]> getFile(String fileName) {
+	public ResponseEntity<byte[]> getFile(String fileName) throws Exception{
 		log.info("파일명: "+fileName);
 		
 		String uploadFolder = "C:\\Users\\USER\\git\\nagaboka\\src\\main\\webapp\\resources\\upload";
@@ -164,6 +165,34 @@ public class AjaxController {
 			e.printStackTrace();
 		}
 		return result;
+	}
+	
+	// 산책 리뷰 작성 시 이미지 썸네일 삭제
+	@PostMapping(value="/deleteFile")
+	@ResponseBody
+	public ResponseEntity<String> deleteFilePOST(String fileName, String type) throws Exception {
+		
+		log.info("♡♡♡♡♡♡♡♡♡♡ deleteFilePOST(fileName, type) 호출");
+		File file;
+		
+		try {
+			// 해당 위치에 썸네일 이름 디코딩 후 삭제
+			file = new File("C:\\Users\\USER\\git\\nagaboka\\src\\main\\webapp\\resources\\upload\\"+URLDecoder.decode(fileName,"UTF-8"));
+			file.delete();
+			
+			// 썸네일 파일 제목에서 "s_" 삭제해서 원본 파일 찾은 후  삭제하기
+			String largeFileName = file.getAbsolutePath().replace("s_", "");
+			log.info("♡♡♡♡♡♡♡♡♡♡  원본 파일 이름: "+largeFileName);
+			file = new File(largeFileName);
+			file.delete();
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			// 파일이 없을 경우에는 못 찾았다고 값 반환
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+		// 성공 후에 삭제됐다고 값 반환
+		return new ResponseEntity<>("deleted", HttpStatus.OK);
 	}
 	
 	
