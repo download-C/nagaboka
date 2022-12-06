@@ -1,5 +1,9 @@
 package nagaboka;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import javax.inject.Inject;
 
 import org.apache.ibatis.session.SqlSession;
@@ -10,7 +14,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.nagaboka.domain.WalkVO;
+import com.nagaboka.domain.walk.WalkReviewVO;
+import com.nagaboka.domain.walk.WalkVO;
+
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(
@@ -26,26 +32,69 @@ public class WalkMapperTest {
 	
 //	@Test
 	public void test() throws Exception {
-		log.info("¢½¢½¢½¢½¢½¢½¢½¢½¢½¢½Å×½ºÆ®");
+		log.info("â™¡â™¡â™¡â™¡â™¡â™¡â™¡â™¡â™¡â™¡test() í…ŒìŠ¤íŠ¸");
 	}
 	
 //	@Test
 	public void insertWalk() throws Exception {
-		log.info("¢½¢½¢½¢½¢½¢½¢½¢½¢½¢½»êÃ¥Àå¼Ò ÀÔ·Â");
+		log.info("â™¡â™¡â™¡â™¡â™¡â™¡â™¡â™¡â™¡â™¡insertWalk() í…ŒìŠ¤íŠ¸");
 		
 		WalkVO walk = new WalkVO();
-		walk.setWname("±¤¾È¸®ÇØ¼ö¿åÀå");
+		walk.setWname("ì‚¼ë½ìƒíƒœê³µì›");
+		walk.setWlat(35.162285);
+		walk.setWlng(128.971192);
+		
+		
 		
 		session.insert(NAMESPACE+".insertWalk", walk);
 		
-		log.info("»êÃ¥ Á¤º¸ DB ÀúÀå ¿Ï·á");
+		log.info("â™¡â™¡â™¡â™¡â™¡â™¡â™¡â™¡â™¡â™¡ì‚°ì±… ì¥ì†Œ DB ì €ì¥ ì™„ë£Œ");
 		
 	}
 	
-	@Test
+//	@Test
 	public void selectWalkCnt() {
-		log.info("¢½¢½¢½¢½¢½¢½¢½¢½¢½¢½»êÃ¥Àå¼Ò °³¼ö ¼¼±â");
-		log.info("¢½¢½¢½¢½¢½¢½¢½¢½¢½¢½"+session.selectOne(NAMESPACE+".selectWalkCnt"));
+		log.info("getWalkCnt() í…ŒìŠ¤íŠ¸");
+		log.info("â™¡â™¡â™¡â™¡â™¡â™¡â™¡â™¡â™¡â™¡ì¥ì†Œ ê°œìˆ˜: "+session.selectOne(NAMESPACE+".getWalkCnt"));
+	}
+	
+//	@Test
+	public void insertWCCon() throws Exception {
+		log.info("â™¡â™¡â™¡â™¡â™¡â™¡â™¡â™¡â™¡â™¡ insertWcon() í…ŒìŠ¤íŠ¸");
+		
+		WalkVO walk = session.selectOne(NAMESPACE+".getWalk", "ì‚¼ë½ìƒíƒœê³µì›");
+		
+
+		WalkReviewVO review = new WalkReviewVO();
+		review.setUsername("Rang2");
+		review.setWalk(walk);
+		review.setWccon("ë‚™ë™ê°• ë˜¥ë°”ëŒì´ ë¶ˆì§€ë§Œ ì¢‹ë„¤ìš”");
+		review.setWclike(true);
+		
+		session.insert(NAMESPACE+".insertreview", review);
+		
+		log.info("â™¡â™¡â™¡â™¡â™¡â™¡â™¡â™¡â™¡â™¡ ëŒ“ê¸€ ë‚¨ê¸°ê¸° ì™„ë£Œ");
+	}
+	 
+//	@Test
+	public void getWalkList() throws Exception {
+		log.info("â™¡â™¡â™¡â™¡â™¡â™¡â™¡â™¡â™¡â™¡ getWalkList() í˜¸ì¶œ");
+		WalkVO walk = session.selectOne(NAMESPACE+".getWalk", "ì‚¼ë½ìƒíƒœê³µì›");
+		log.info("â™¡â™¡â™¡â™¡â™¡â™¡â™¡â™¡â™¡â™¡ ê°€ì ¸ì˜¨ ì¥ì†Œ ì •ë³´: "+walk);
+		List<WalkVO> walkList = session.selectList(NAMESPACE+".getWalkList", walk);
+		log.info("â™¡â™¡â™¡â™¡â™¡â™¡â™¡â™¡â™¡â™¡ ë¦¬ìŠ¤íŠ¸ ëª©ë¡ : "+walkList);
+	}
+	
+//	@Test
+	public void getWalkCnt() throws Exception {
+		log.info("â™¡â™¡â™¡â™¡â™¡â™¡â™¡â™¡â™¡â™¡ getWalkCnt() í˜¸ì¶œ");
+		
+		double latitude = 35.2;
+		double longitude = 129.5;
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("latitude", latitude);
+		map.put("longitude", longitude);
+		log.info("â™¡â™¡â™¡â™¡â™¡â™¡â™¡â™¡â™¡â™¡  ê¸€ ê°œìˆ˜ :"+session.selectOne(NAMESPACE+".getWalkCnt"), map);
 	}
 	
 }
