@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.nagaboka.mapper.UserMapper">
+
+	<resultMap type="com.nagaboka.domain.UserVO" id="userMap">
+		<id property="u_id" column="u_id" />
+		<result property="u_id" column="u_id" />
+		<result property="u_pw" column="u_pw" />
+		<result property="u_name" column="u_name" />
+		<result property="u_phone" column="u_phone" />
+		<result property="u_reg_date" column="u_reg_date" />
+		<result property="u_latitude" column="u_latitude" />
+		<result property="u_longitude" column="u_longitude" />
+		<result property="u_road_full_addr" column="u_road_full_addr" />
+		<result property="u_enabled" column="u_enabled" />
+		<collection property="authList" resultMap="authMap" />
+	</resultMap>
+	
+	<resultMap type="com.nagaboka.domain.UserAuthVO" id="authMap">
+		<result property="u_id" column="u_id" />
+		<result property="auth" column="auth" />
+	</resultMap>
+	
+	<!-- 회원 정보 조회 -->
+	<select id="getUser" resultMap="userMap">
+		select u.u_id, u.u_pw, u.u_name, u.u_enabled, u.u_reg_date, a.auth
+		from nagaboka.user u left outer join nagaboka.user_auth a 
+		on u.u_id = a.u_id
+		where u.u_id = #{u_id}
+	</select>
+
+</mapper>
