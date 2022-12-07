@@ -2,6 +2,8 @@ package com.nagaboka.controller;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
@@ -19,6 +21,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.nagaboka.domain.PageMakerVO;
 import com.nagaboka.domain.PageVO;
+import com.nagaboka.domain.walk.WalkReviewAttachFileVO;
 import com.nagaboka.domain.walk.WalkReviewVO;
 import com.nagaboka.domain.walk.WalkVO;
 import com.nagaboka.service.WalkService;
@@ -79,16 +82,15 @@ public class WalkController {
 			String wr_imgs = "";
 			for(int i=0; i<review.getAttachList().size(); i++) {
 				wr_imgs += review.getAttachList().get(i).toString();
-				wr_imgs += "$";
+				wr_imgs += "-";
 			}
-			log.info("♡♡♡♡♡♡♡♡♡♡첨부파일 $ 기준으로 붙이기: "+wr_imgs.substring(0, wr_imgs.length()-1));
-			// 맨 마지막 $ 빼고 set하기
+			log.info("♡♡♡♡♡♡♡♡♡♡첨부파일 - 기준으로 붙이기: "+wr_imgs.substring(0, wr_imgs.length()-1));
+			// 맨 마지막 - 빼고 set하기
 			review.setWr_imgs(wr_imgs.substring(0, wr_imgs.length()-1));
 		}
 		
 		// 로그인 구현되면 이걸루 바꾸기~
 //		review.setU_id((String)session.getAttribute("u_id"));
-		review.setU_id("admin");
 		log.info("♡♡♡♡♡♡♡♡♡♡리뷰 정보: "+review);
 		
 		service.writeWalkReview(review);
@@ -106,18 +108,56 @@ public class WalkController {
 		PageMakerVO pm = new PageMakerVO();
 		pm.setVo(vo);
 		
-		
-		
 		walk.setW_name("광안리해수욕장"); // 임시로 광안리해수욕장으로 장소 지정 //
 		
 		int cnt = service.getWalkReviewCnt(walk);
 		log.info(walk.getW_name()+" 리뷰 개수: "+cnt);
 		
 		pm.setTotalCnt(cnt);
+		
 		model.addAttribute("pm", pm);
 		log.info("pm으로 페이징 처리 완료");
 		
 		List<WalkReviewVO> walkReviewList = service.getWalkReviewList(pm, walk);
+		
+		// 이미지 정보 담을 객체 attach 리스트 생성	
+		
+
+		for(int i=0; i<walkReviewList.size(); i++) {
+			String[] imgs = walkReviewList.get(i).getWr_imgs().split("-");
+			log.info("배열 길이: "+imgs.length);
+			
+			
+			// 첨부파일이 2개 이상일 때만 "-"로 자르기
+			if(imgs.length>1) {
+				
+				List<WalkReviewAttachFileVO> attachList = new ArrayList<>();
+				for(int j=0; j<imgs.length; j++) {
+					log.info(j+"번 배열 저장 위치: "+imgs[j].substring(0, 11));
+					String uploadPath = imgs[j].substring(0, 11);
+					String uuid = imgs[j].substring(11,19);
+					String fileName = imgs[j].substring(20);
+					log.info("uploadPath: "+uploadPath);
+					log.info("uuid: "+uuid);
+					log.info("fileName: "+fileName);
+					
+					WalkReviewAttachFileVO attach = new WalkReviewAttachFileVO();
+					attach.setUploadPath(uploadPath);
+					attach.setUuid(uuid);
+					attach.setFileName(fileName);
+					attach.setThumbnail(uploadPath+"s_"+uuid+"_"+fileName);
+					log.info("섬네일 주소: "+uploadPath+"s_"+uuid+"_"+fileName);
+					
+					attachList.add(attach);
+					walkReviewList.get(i).setAttachList(attachList);
+				}
+			} 
+		}
+		
+		// 해당 장소의 첨부 사진 모두 가져오기 
+		
+		
+		model.addAttribute("thumbnailList", service.getWalkRevieImgList(walk));
 		model.addAttribute("walkReviewList", walkReviewList);
 		log.info(walk.getW_name()+" 리뷰 목록 부르기 성공");
 	}

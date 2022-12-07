@@ -9,29 +9,51 @@
 <h1>walk/walkReviewList.jsp</h1>
 
 <div class="container">
-	<table class="table table-hover" style="box-shadow: 7px 14px 90px 3px rgba(163, 174, 184, 0.7);">
-		<thead>
-			<tr style="text-align: center; color:white; background-color: #5107B0;" >
-				<th>작성자</th>
-				<th>리뷰내용</th>
-				<th>발바닥</th>
-				<th>작성일</th>
-			</tr>
-		</thead>
-		<tbody>
-			<c:forEach var="list" items="${walkReviewList }">
-			<tr style="text-align: center;">
-				<td>${list.u_name }</td>
-				<td>${list.wr_con }</td>
-				<td>${list.wr_like }</td>
-				<td><fmt:formatDate value="${list.wr_regdate }" pattern="yyyy.MM.dd hh:mm" /> </td>
-			</tr>
+	<!-- 리뷰에 작성한 첨부파일 모두 보여주는 곳 -->
+	<div style="border: 2px solid lime">
+		<h3>썸네일 모아보기 위치</h3>
+		<div>
+		<c:forEach var="thumbnail" items="${map.thumbnailList }" end="4">
+			<div>
+				<img src="${pageContext.request.contextPath}/resources/upload/review/${thumbnail }">
+			</div>
+		</c:forEach>
+		<button onclick="" style="width: 100%">사진 더 보기 </button>
+		</div>
+	</div>
+	
+	<div>
+	<c:forEach var="list" items="${walkReviewList }">
+		<div style="border: 2px solid black; margin: 2px;">
+			<!-- 리뷰 작성자 -->
+			<div style="border: 2px solid gray; margin: 2px;">
+				<b>${list.u_name }</b>
+				
+			</div>
+			<!-- 첨부 이미지 쪼개서 들고오기 -->
+			<div style="border: 2px solid yellow; margin: 2px;">
+			<c:forEach var="attach" items="${list.attachList }" varStatus="status">
+				<c:forEach var="thumbnail" items="${attach.thumbnail }">
+				<img src="${pageContext.request.contextPath}/resources/upload/review/${thumbnail}">
+				</c:forEach>
 			</c:forEach>
-		</tbody>
-	</table>
+			</div>
+			<!-- 리뷰 내용 -->
+			<div style="border: 2px solid red; margin: 2px;">${list.wr_con }</div>
+			<!-- 리뷰 작성 시간 -->
+			<div style="border: 2px solid blue; margin: 2px;"><fmt:formatDate value="${list.wr_regdate }" pattern="yyyy.MM.dd HH:mm" /> </div>
+			<!-- 수정 삭제 버튼 -->
+			<div>
+<%-- 			<c:if test="${list.u_name eq sessionScope.u_name} || ${list.u_name} eq '관리자'">ㅊ --%>
+				<button>수정</button>
+				<button>삭제</button>
+<%-- 			</c:if> --%>
+			</div>
+		</div>		
+			<br>
+	</c:forEach>
+	</div>
 </div>
-
-
 <!-- 본문 작성 위치 끝 -->
 
 <%@ include file="../include/footer.jsp"%>

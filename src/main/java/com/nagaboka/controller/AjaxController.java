@@ -64,7 +64,7 @@ public class AjaxController {
 		// 파일의 변환된 정보 담을 리스트 객체 생성
 		List<WalkReviewAttachFileVO> list = new ArrayList<>();
 		// 파일 저장 위치
-		String uploadFolder = "C:\\Users\\USER\\git\\nagaboka\\src\\main\\webapp\\resources\\upload";
+		String uploadFolder = "C:\\Users\\USER\\git\\nagaboka\\src\\main\\webapp\\resources\\upload\\review";
 		String uploadFolderPath = getFolder();
 		
 		// 업로드한 연/월/일로 폴더 생성하기 시작 --------------
@@ -136,7 +136,7 @@ public class AjaxController {
 	public ResponseEntity<byte[]> getFile(String fileName) throws Exception{
 		log.info("파일명: "+fileName);
 		
-		String uploadFolder = "C:\\Users\\USER\\git\\nagaboka\\src\\main\\webapp\\resources\\upload";
+		String uploadFolder = "C:\\Users\\USER\\git\\nagaboka\\src\\main\\webapp\\resources\\upload\\review";
 		File file = new File(uploadFolder+"\\"+fileName);
 		log.info("파일: "+file);
 		

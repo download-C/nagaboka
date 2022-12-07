@@ -1,5 +1,6 @@
 package com.nagaboka.persistence;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -42,6 +43,7 @@ public class WalkDAOImpl implements WalkDAO{
 
 	@Override
 	public void writeWalkReview(WalkReviewVO review) {
+		log.info("작성한 리뷰 정보: "+review);
 		session.insert(NAMESPACE+".writeWalkReview", review);
 	}
 
@@ -56,6 +58,39 @@ public class WalkDAOImpl implements WalkDAO{
 	@Override
 	public int getWalkReviewCnt(WalkVO walk) throws Exception {
 		return session.selectOne(NAMESPACE+".getWalkReviewCnt", walk);
+	}
+
+	@Override
+	public List<String> getWalkReviewImgList(WalkVO walk) throws Exception {
+		String[] imgs = null; 
+		
+		List<String> imgList = new ArrayList<>();
+		List<String> thumbnailList = new ArrayList<>();
+
+		String w_name = "광안리해수욕장";
+		
+		walk = session.selectOne(NAMESPACE+".getWalk", w_name);
+		List<String> walkReviewImgAll = session.selectList(NAMESPACE+".getWalkReviewImgAll", walk);
+		log.info("가져온 리뷰 정보: "+walkReviewImgAll);
+		for(int i=0; i<walkReviewImgAll.size(); i++) {
+			imgs = walkReviewImgAll.get(i).split("-");
+			for(String img: imgs) {
+//				log.info("이미지 파일: "+img);
+//				imgList.add(img);
+				
+				String uploadPath = img.substring(0, 11);
+				String uuid = img.substring(11,19);
+				String fileName = img.substring(20);
+				log.info(uploadPath);
+				log.info(uuid);
+				log.info(fileName);
+				thumbnailList.add(uploadPath+"s_"+uuid+"_"+fileName);
+			}
+		}
+		log.info("하나씩 자른 이미지 목록: "+imgList);
+		log.info("썸네일 목록:" +thumbnailList);
+
+		return thumbnailList;
 	}
 	
 	

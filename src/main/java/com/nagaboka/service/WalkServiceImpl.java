@@ -1,6 +1,7 @@
 package com.nagaboka.service;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -47,6 +48,11 @@ public class WalkServiceImpl implements WalkService{
 	@Override
 	public int getWalkReviewCnt(WalkVO walk) throws Exception {
 		return dao.getWalkReviewCnt(walk);
+	}
+
+	@Override
+	public List<String> getWalkRevieImgList(WalkVO walk) throws Exception {
+		return dao.getWalkReviewImgList(walk);
 	}
 
 	

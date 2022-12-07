@@ -1,5 +1,6 @@
 package nagaboka;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -102,7 +103,7 @@ public class WalkMapperTest {
 		log.info("♡♡♡♡♡♡♡♡♡♡  글 개수 :"+session.selectOne(NAMESPACE+".getWalkCnt"), map);
 	}
 	
-	@Test
+//	@Test
 	public void getWalkReviewList() throws Exception {
 		log.info("♡♡♡♡♡♡♡♡♡♡ getWalkReviewList() 호출");
 		
@@ -121,5 +122,32 @@ public class WalkMapperTest {
 		
 		session.selectList(NAMESPACE+".getWalkReviewList", vo);
 	}
+	
+//	@Test 
+	public void getImgs() throws Exception {
+		
+		log.info("리스트 불러서 이미지 파일 자르기");
+//		List<String> imgs = new ArrayList<String>();
+//		imgs.add("2022\\12\\07\\858caf5f_2.jpg$2022\\12\\07\\2c5997db_584.jpg");
+//		imgs.add("2022\\12\\07\\2f2b09d5_2.jpg$2022\\12\\07\\6b049962_584.jpg");
+//		for(int i=0; i<imgs.size(); i++) {
+//			String[] images = imgs.get(i).split("$");
+//			for(String img: images) {
+//				log.info("$로 자른 이미지 파일 이름: "+img);
+//			}
+//		}
+		
+		String wr_imgs = "2022\\12\\07\\858caf5f_2.jpg-2022\\12\\07\\2c5997db_584.jpg";
+		String[] imgs = wr_imgs.split("-");
+		for(String img: imgs) {
+			log.info("자름 "+img);
+		}
+	}
+	
+//	@Test
+	public void getWalkReviewImgAll() throws Exception{
+
+	}
+	
 	
 }
