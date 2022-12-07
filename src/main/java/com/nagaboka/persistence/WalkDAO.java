@@ -1,6 +1,7 @@
 package com.nagaboka.persistence;
 
 import java.util.List;
+import java.util.Map;
 
 import com.nagaboka.domain.PageMakerVO;
 import com.nagaboka.domain.PageVO;
@@ -18,6 +19,8 @@ public interface WalkDAO {
 	List<WalkReviewVO> getWalkReviewList(PageMakerVO pm, WalkVO walk) throws Exception;
 
 	int getWalkReviewCnt(WalkVO walk) throws Exception;
+
+	List<String> getWalkReviewImgList(WalkVO walk) throws Exception;
 
 
 

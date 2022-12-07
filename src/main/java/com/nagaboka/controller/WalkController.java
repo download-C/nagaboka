@@ -2,6 +2,7 @@ package com.nagaboka.controller;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.inject.Inject;
@@ -90,7 +91,6 @@ public class WalkController {
 		
 		// 로그인 구현되면 이걸루 바꾸기~
 //		review.setU_id((String)session.getAttribute("u_id"));
-		review.setU_id("admin");
 		log.info("♡♡♡♡♡♡♡♡♡♡리뷰 정보: "+review);
 		
 		service.writeWalkReview(review);
@@ -152,10 +152,12 @@ public class WalkController {
 					walkReviewList.get(i).setAttachList(attachList);
 				}
 			} 
-
-			
 		}
 		
+		// 해당 장소의 첨부 사진 모두 가져오기 
+		
+		
+		model.addAttribute("thumbnailList", service.getWalkRevieImgList(walk));
 		model.addAttribute("walkReviewList", walkReviewList);
 		log.info(walk.getW_name()+" 리뷰 목록 부르기 성공");
 	}

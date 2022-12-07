@@ -34,7 +34,6 @@
 			<location>C:\\Users\\USER\\git\\nagaboka\\src\\main\\webapp\\resources\\upload</location>
 			<max-file-size>20971520</max-file-size> <!-- 파일 하나 최대 크기20MB -->
 			<max-request-size>41943040</max-request-size> <!-- 한 번에 올리는 파일 최대 크기 40MB -->
-			<file-size-threshold>20971520</file-size-threshold> <!-- 메모리 사용 크기 20MB -->
 		</multipart-config>
 		<!-- 멀티파트 업로드 설정 끝 -->
 		
@@ -45,7 +44,7 @@
 		<url-pattern>/</url-pattern>
 	</servlet-mapping>
 	
-		<!-- 한글처리 필터 -->
+	<!-- 한글처리 필터 -->
 	<filter>
 		<filter-name>encoding</filter-name>
 		<filter-class>org.springframework.web.filter.CharacterEncodingFilter

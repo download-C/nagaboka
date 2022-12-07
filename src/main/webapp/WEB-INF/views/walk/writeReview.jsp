@@ -65,16 +65,12 @@ function checkExtension(fileName, fileSize){
 	var regEx = new RegExp("(.*?)\.(bmp|jpg|jpeg|png|gif)$");
 	var maxSize = 5242880; // 5MB
 	if(fileSize>=maxSize){
-		alert("파일 사이즈는 5MB를 넘을 수 없습니다.");
-		return false;
-	} else {
-// 		alert("파일 사이즈 적당~");
+		alert("파일 사이즈는 5MB를 넘을 수 없습니다.");      
+		return;
 	}
 	if(!regEx.test(fileName)) {
 		alert("이미지 파일만 업로드 가능합니다.");
-		return false;
-	} else {
-// 		alert("파일 확장자 확인 완료~");
+		return;
 	}
 	return true;
 }
@@ -143,39 +139,48 @@ $(document).ready(function(){
 	
 // 첨부파일 들어왔을 때 자동으로 확장자 및 파일 사이즈 확인 후 업로드 ===============
 	$("input[type='file']").change(function(e){
+		
 		var formData = new FormData();
 		var inputFile = $("input[name='uploadFile']");
 		var files = inputFile[0].files;
+		if(files.length >3 ) {
+			alert("사진은 최대 3개까지 등록할 수 있습니다.");
+			$("#imgFlag").attr("value", 0);
+			return;
+			// 첨부파일 초기화
+		} 
+		
 		for(var i=0; i<files.length; i++) {
 			if(!checkExtension(files[i].name, files[i].size)){
-				return false;
-			}
+				$(".uploadDiv").html(cloneObj.html());
+			} 
+			$.ajax({
+				url: '/ajax/reviewUpload',
+				processData: false,
+				contentType: false,
+				data: formData,
+				type: 'POST',
+				dataType: 'json',
+				success: function(result) {
+
+					// 업로드 성공한 파일 정보들 jsonList 형태로 콘솔에 찍기
+					console.log(result);
+					
+					// 업로드 성공한 파일명 띄워주기
+					showUploadedFile(result);
+
+					
+					// 업로드 성공 후 첨부파일 부분 초기화
+					$(".uploadDiv").html(cloneObj.html());
+
+					// 업로드된 이미지 썸네일 띄우기
+					
+					$("#imgFlag").attr("value", 1);
+				}
+			}); // ajax
 			formData.append("uploadFile", files[i]);
 		} // for
 		
-		$.ajax({
-			url: '/ajax/reviewUpload',
-			processData: false,
-			contentType: false,
-			data: formData,
-			type: 'POST',
-			dataType: 'json',
-			success: function(result) {
-// 				alert("업로드 성공");
-				// 업로드 성공한 파일 정보들 jsonList 형태로 콘솔에 찍기
-				console.log(result);
-				
-				// 업로드 성공한 파일명 띄워주기
-				showUploadedFile(result);
-// 				alert("파일명 띄우기 성공");
-				
-				// 업로드 성공 후 첨부파일 부분 초기화
-				$(".uploadDiv").html(cloneObj.html());
-// 				alert("초기화 성공");
-				// 업로드된 이미지 썸네일 띄우기
-				// 1. 파일 이름 띄우기
-			}
-		}); // ajax
 	}); // input file
 	
 // 원본파일 클릭 시 사라지게 하기 =================================
@@ -214,8 +219,19 @@ $(document).ready(function(){
 	
 	$("button[type='submit']").on("click", function(e){
 		e.preventDefault();
-		alert("작성 버튼 클릭");
+
+		// 첨부파일 제대로 들어갔는지 확인
+		var imgFlag = $("#imgFlag").val();
+		if(imgFlag==0) {
+			alert("첨부파일을 다시 확인하세요");
+			return false;
+		}
 		
+		// 내용 입력했는지 확인
+		if($("#wr_con").val()=="") {
+			alert("리뷰를 입력하세요");
+			return false;
+		}
 		var str = "";
 		
 		$(".uploadResult ul li div button").each(function(i, obj){
@@ -245,24 +261,27 @@ $(document).ready(function(){
 <h1> walk/writeReview.jsp </h1>
 	
 	<!-- 산책 장소 후기 남기기  폼 -->
-	<form role="form" action="" onsubmit="return false" enctype="multipart/form-data">
-<!-- 		<!-- 로그인 아이디 => --> -->
-<!-- 		<input type="hidden" name="u_id" value="admin">  -->
+	<form role="form" action="" onsubmit="return false" enctype="multipart/form-data" >
+ 		<!-- 로그인한 사람의 이름 --> 
+<%-- 		<input type="hidden" name="u_id" value="${sessionScope.u_name}">  --%>
+		<input type="hidden" name="u_id" value="관리자"> 
 		<!-- 산책 장소 이름 정보  -->
-		<input type="text" name="w_name" value="광안리해수욕장">
+		<input type="text" name="w_name" value="광안리해수욕장"><br>
 		
 		<!-- 리뷰 내용 -->
-		<textarea name="wr_con" placeholder="리뷰 내용"></textarea>
-
+		<textarea name="wr_con" id="wr_con" placeholder="리뷰 내용"></textarea>
+		<input type="hidden" id="conFlag" value=0>
 		<!-- 발바닥 모양 버튼 -->
 		<button type="button" onclick="changeImg()" style="border: none; background-color: transparent;">
 			<img id="pawImg" src="${pageContext.request.contextPath}/resources/img/heart-with-dog-paw-48(gray).png">
 		</button>
 		<input type="hidden" name="wr_like" id="paw" value=0>
 	</form>
+	
 	<hr>
 	<div class="uploadDiv">
-		<div><h3>파일 첨부</h3></div>
+		<h3>파일 첨부</h3>
+		<span>사진은 최대 3개까지 등록할 수 있으며 bmp/jpg/jpeg/png/gif만 가능합니다.</span><br>
 		<input type="file" name="uploadFile" multiple> <br>
 	</div>
 	<div class="uploadResult">
@@ -277,6 +296,7 @@ $(document).ready(function(){
 	</div>
 
 	<hr>
+	<input type="hidden" value=1 id="imgFlag">
 	<button type="submit">작성</button><button id="reset">초기화</button>
 	
 

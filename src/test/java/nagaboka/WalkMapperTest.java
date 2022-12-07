@@ -144,5 +144,10 @@ public class WalkMapperTest {
 		}
 	}
 	
+//	@Test
+	public void getWalkReviewImgAll() throws Exception{
+
+	}
+	
 	
 }

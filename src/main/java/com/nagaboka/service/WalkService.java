@@ -1,6 +1,7 @@
 package com.nagaboka.service;
 
 import java.util.List;
+import java.util.Map;
 
 import com.nagaboka.domain.PageMakerVO;
 import com.nagaboka.domain.PageVO;
@@ -18,6 +19,8 @@ public interface WalkService {
 	public List<WalkReviewVO> getWalkReviewList(PageMakerVO pm, WalkVO walk) throws Exception;
 
 	public int getWalkReviewCnt(WalkVO walk) throws Exception;
+
+	public List<String> getWalkRevieImgList(WalkVO walk) throws Exception;
 
 
 
