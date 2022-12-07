@@ -16,5 +16,6 @@ public class WalkReviewVO {
 	private String wr_imgs;	// 리뷰 이미지 정보 -> List로 변경될 듯
 	private boolean wr_like;	// 발바닥
 	private List<WalkReviewAttachFileVO> attachList;
+	private String[] imgs;
 
 }

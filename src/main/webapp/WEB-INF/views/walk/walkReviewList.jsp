@@ -11,20 +11,25 @@
 <div class="container">
 	<ul>
 	<c:forEach var="list" items="${walkReviewList }">
-		<li>
+		<div class="">
 			<!-- 리뷰 작성자 -->
-			<div>${list.u_name }</div>
-			<!-- 첨부 이미지 -->
-			<div>${list.wr_imgs }</div>
+			<div><b>${list.u_name }</b></div>
+			<!-- 첨부 이미지 쪼개서 들고오기 -->
+			<c:forEach var="attach" items="${list.attachList }" varStatus="status">
+				<c:forEach var="thumbnail" items="${attach.thumbnail }">
+				<img src="${pageContext.request.contextPath}/resources/upload/review/${thumbnail}">
+				</c:forEach>
+			</c:forEach>
 			<!-- 리뷰 내용 -->
 			<div>${list.wr_con }</div>
-			<div>${list.wr_regdate }</div>
-		</li>		
+			<div><fmt:formatDate value="${list.wr_regdate }" pattern="yyyy.MM.dd HH:mm" /> </div>
+			<br>
+		</div>		
 	</c:forEach>
 	</ul>
 </div>
 
-
+위치: 
 <!-- 본문 작성 위치 끝 -->
 
 <%@ include file="../include/footer.jsp"%>
