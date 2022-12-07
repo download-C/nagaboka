@@ -15,7 +15,7 @@ public interface WalkService {
 
 	public void writeWalkReview(WalkReviewVO review) throws Exception;
 
-	public List<WalkReviewVO> getWalkReviewList(PageMakerVO pm) throws Exception;
+	public List<WalkReviewVO> getWalkReviewList(PageMakerVO pm, WalkVO walk) throws Exception;
 
 	public int getWalkReviewCnt(WalkVO walk) throws Exception;
 

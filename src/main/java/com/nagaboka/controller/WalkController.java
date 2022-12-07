@@ -105,6 +105,10 @@ public class WalkController {
 		PageMakerVO pm = new PageMakerVO();
 		pm.setVo(vo);
 		
+		
+		
+		walk.setW_name("광안리해수욕장"); // 임시로 광안리해수욕장으로 장소 지정 //
+		
 		int cnt = service.getWalkReviewCnt(walk);
 		log.info(walk.getW_name()+" 리뷰 개수: "+cnt);
 		
@@ -112,7 +116,7 @@ public class WalkController {
 		model.addAttribute("pm", pm);
 		log.info("pm으로 페이징 처리 완료");
 		
-		List<WalkReviewVO> walkReviewList = service.getWalkReviewList(pm);
+		List<WalkReviewVO> walkReviewList = service.getWalkReviewList(pm, walk);
 		model.addAttribute("walkReviewList", walkReviewList);
 		log.info(walk.getW_name()+" 리뷰 목록 부르기 성공");
 	}

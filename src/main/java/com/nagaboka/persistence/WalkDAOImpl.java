@@ -46,8 +46,11 @@ public class WalkDAOImpl implements WalkDAO{
 	}
 
 	@Override
-	public List<WalkReviewVO> getWalkReviewList(PageMakerVO pm) throws Exception {
-		return session.selectList(NAMESPACE+".getWalkReviewList", pm);
+	public List<WalkReviewVO> getWalkReviewList(PageMakerVO pm, WalkVO walk) throws Exception {
+		Map<String, Object> map = new HashMap<>();
+		map.put("walk", walk);
+		map.put("pm", pm);
+		return session.selectList(NAMESPACE+".getWalkReviewList", map);
 	}
 
 	@Override

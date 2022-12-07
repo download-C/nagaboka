@@ -67,8 +67,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<!-- 산책 장소 댓글 입력 -->
 	<!-- 테스트 완료 -->
 	<insert id="writeWalkReview">
-	  insert into walk_review(w_no, u_id, wr_con, wr_imgs, wr_like)
-	  values (#{walk.w_no}, #{u_id}, #{wr_con}, ifnull(#{wr_imgs},''), #{wr_like})
+	  insert into walk_review(w_no, u_name, wr_con, wr_imgs, wr_like)
+	  values (#{walk.w_no}, #{u_name}, #{wr_con}, ifnull(#{wr_imgs},''), #{wr_like})
 	</insert>
 	
 	<!-- 해당 장소의 댓글 개수  -->
@@ -83,10 +83,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		from walk w join walk_review r
 		on w.w_no = r.w_no
 		join user u
-		on u.u_id = r.u_id 
-		where w.w_name=#{w_name}
+		on u.u_name = r.u_name 
+		where w.w_name=#{walk.w_name}
 		order by wr_no desc
-		limit #{startRow}, #{pageSize}
+		limit #{pm.startRow}, #{pm.vo.perPageNum}
 	</select>
 	
 	<!-- 산책 장소 댓글 수정 -->

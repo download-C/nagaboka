@@ -40,8 +40,8 @@ public class WalkServiceImpl implements WalkService{
 	}
 
 	@Override
-	public List<WalkReviewVO> getWalkReviewList(PageMakerVO pm) throws Exception {
-		return dao.getWalkReviewList(pm);
+	public List<WalkReviewVO> getWalkReviewList(PageMakerVO pm, WalkVO walk) throws Exception {
+		return dao.getWalkReviewList(pm, walk);
 	}
 
 	@Override
