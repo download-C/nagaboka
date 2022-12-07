@@ -11,6 +11,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
+import com.nagaboka.domain.PageMakerVO;
+import com.nagaboka.domain.PageVO;
+import com.nagaboka.domain.walk.WalkReviewVO;
 import com.nagaboka.domain.walk.WalkVO;
 
 @Repository
@@ -30,6 +33,29 @@ public class WalkDAOImpl implements WalkDAO{
 		map.put("latitude", latitude);
 		map.put("longitude", longitude);
 		return session.selectList(NAMESPACE+".getWalkList", map);
+	}
+
+	@Override
+	public WalkVO getWalk(String wname) throws Exception {
+		return session.selectOne(NAMESPACE+".getWalk", wname);
+	}
+
+	@Override
+	public void writeWalkReview(WalkReviewVO review) {
+		session.insert(NAMESPACE+".writeWalkReview", review);
+	}
+
+	@Override
+	public List<WalkReviewVO> getWalkReviewList(PageMakerVO pm, WalkVO walk) throws Exception {
+		Map<String, Object> map = new HashMap<>();
+		map.put("walk", walk);
+		map.put("pm", pm);
+		return session.selectList(NAMESPACE+".getWalkReviewList", map);
+	}
+
+	@Override
+	public int getWalkReviewCnt(WalkVO walk) throws Exception {
+		return session.selectOne(NAMESPACE+".getWalkReviewCnt", walk);
 	}
 	
 	

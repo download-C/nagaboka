@@ -15,88 +15,85 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	
 	<!-- 산책 장소 댓글 resultMap -->
 	
-	<resultMap type="WalkReviewVO" id="wron">
-		<result property="wrno" column="wrno"/>
-		<result property="wrregdate" column="wrregdate"/>
-		<result property="wrcon" column="wrcon"/>
-		<result property="wrimgs" column="wrimgs"/>
-		<result property="wrlike" column="wrlike"/>
-		<collection property="walk" resultMap="wak" />
+	<resultMap type="WalkReviewVO" id="review">
+		<result property="wr_no" column="wr_no"/>
+		<result property="wr_regdate" column="wr_regdate"/>
+		<result property="wr_con" column="wr_con"/>
+		<result property="wr_imgs" column="wr_imgs"/>
+		<result property="wr_like" column="wr_like"/>
+		<collection property="walk" resultMap="walk" />
 		<collection property="user" resultMap="user" />
 	</resultMap>
 	
 	<!-- 회원 resultMap -->
-	<!-- <resultMap type="UserVO" id="user">
-		<result property="username" column="username" />
-		<result property="password" column="password" />
-		<result property="name" column="name" />
-		<result property="phone" column="phone" />
-		<result property="regdate" column="regdate" />
-		<result property="latitude" column="latitude" />
-		<result property="longitude" column="longitude" />
-		<result property="roadFullAddr" column="roadFullAddr" />
-	</resultMap> -->
+	<resultMap type="UserVO" id="user">
+		<result property="u_id" column="u_id" />
+		<result property="u_pw" column="u_pw" />
+		<result property="u_name" column="u_name" />
+		<result property="u_regdate" column="u_regdate" />
+		<result property="u_latitude" column="u_latitude" />
+		<result property="u_longitude" column="u_longitude" />
+		<result property="u_road_full_Addr" column="u_road_full_addr" />
+	</resultMap>
 	
 	<!-- 산책 장소 최초 입력 -->
 	<!-- 테스트 완료 -->
-	<insert id="insertWalk">
-	  insert into walk(wname, wlat, wlng)
-	  values (#{wname}, #{wlat}, #{wlng}) 
+	<insert id="writeWalk">
+	  insert into walk(w_name, w_lat, w_lng)
+	  values (#{w_name}, #{w_lat}, #{w_lng}) 
 	</insert>
 	
 	<!-- 산책 장소 개수  | 반경 설정 어떻게 할지 생각해보고 where절 잘 구해야함 -->	
 	<!-- 1위도는 133.33km 차이 -->
 	<select id="getWalkCnt" resultType="Integer">
-		select count(wno) from walk
-	</select>
-	
-	<!-- 산책 장소 댓글 입력 -->
-	<!-- 테스트 완료 -->
-	<insert id="insertReview">
-	  insert into walk_comment(wno, user, wrcon, wrimgs, wrlike)
-	  values (#{walk.wno}, #{username}, #{wrcon}, ifnull(#{wrimgs},''), #{wrlike})
-	</insert>
-	
-	<!-- 댓글 달고 난 다음에 해당 장소의  이름으로 댓글 개수 업데이트 -->
-	<update id="updateWlikeCnt">
-		update from walk
-		set wrcount
-	</update>
-	
-	<!-- 댓글 달고 난 다음에 해당 장소의  이름으로 발바닥 개수 업데이트 -->
-	<!-- 해당 장소의 like가 1인 댓글의 개수  -->
-	<update id="updateWRCnt">
-		update from walk
-		set wrcount=(count wno
-					 from walk_comment
-					 where wname=#{wname} and wrlike=1)
-	    where wname=#{wname}
-	</update>
-	
-	<!-- 산책 장소 이름으로 목록 정보(장소명, 댓글 수, 발바닥 수) 불러오기 -->
-	<!-- 테스트 완료 -->
-	<select id="getWalkList" resultType="WalkVO">
-		select w.wno, w.wname, wlat, wlng, count(c.wrno) as wrcount, sum(c.wrlike) as wlikecount
-		from walk w join walk_comment c
-		on w.wno = c.wno 
-	
+		select count(w_no) from walk
 	</select>
 	
 	<!-- 특정 산책 장소 정보 이름으로 불러오기 -->
 	<select id="getWalk" resultType="WalkVO">
 		select * from walk
-		where wname=#{wname}
+		where w_name=#{w_name}
+	</select>
+	
+	<!-- 산책 장소 이름으로 목록 정보(장소명, 댓글 수, 발바닥 수) 불러오기 -->
+	<!-- 테스트 완료 -->
+	<select id="getWalkList" resultType="WalkVO">
+		select w.w_no, w.w_name, w_lat, w_lng, count(c.wr_no) as wr_count, 
+			   sum(c.wr_like) as w_likecount
+		from walk w join walk_review c
+		on w.w_no = c.w_no 	
+	</select>
+	
+	<!-- 산책 장소 댓글 입력 -->
+	<!-- 테스트 완료 -->
+	<insert id="writeWalkReview">
+	  insert into walk_review(w_no, u_name, wr_con, wr_imgs, wr_like)
+	  values (#{walk.w_no}, #{u_name}, #{wr_con}, ifnull(#{wr_imgs},''), #{wr_like})
+	</insert>
+	
+	<!-- 해당 장소의 댓글 개수  -->
+	<select id="getWalkReviewCnt" resultType="Integer">
+		select count(wr_no) from walk_review
+		where w_no = #{w_no}
 	</select>
 	
 	<!-- 특정 산책 장소 댓글 목록 불러오기 -->
-	<select id="getReviewList" resultType="WalkReviewVO">
+	<select id="getWalkReviewList" resultType="WalkReviewVO">
+		select w.w_name, u.u_name, r.wr_regdate, r.wr_con, r.wr_imgs, r.wr_like
+		from walk w join walk_review r
+		on w.w_no = r.w_no
+		join user u
+		on u.u_name = r.u_name 
+		where w.w_name=#{walk.w_name}
+		order by wr_no desc
+		limit #{pm.startRow}, #{pm.vo.perPageNum}
 	</select>
 	
 	<!-- 산책 장소 댓글 수정 -->
-	<update id="updateWReview">
+	<update id="updateWalkReview">
 	</update>
 	
 	<!-- 산책 장소 댓글 삭제 -->
-	<delete id="deleteWReview">
+	<delete id="deleteWalkReview">
 	</delete>
 </mapper>

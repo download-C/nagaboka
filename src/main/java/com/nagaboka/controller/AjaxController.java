@@ -56,19 +56,6 @@ public class AjaxController {
 		
 	}
 	
-	// 파일의 확장자로 첨부파일이 그림인지 확인 후 image가 아닐 경우에는 false 반환
-	private boolean checkImageType(File file) throws Exception{
-		try {
-			// 첨부파일이 있을 경우 해당 첨부파일의 확장자가 어떤 타입인지를 반환
-			// image/png, image/jpg 등등으로 반환됨~
-			String contextType = Files.probeContentType(file.toPath());
-			return contextType.startsWith("image");
-		}catch (Exception e) {
-			e.printStackTrace();
-		}
-		return false;
-	}
-	
 	// 산책 리뷰 이미지 자동 업로드
 	@PostMapping(value="/reviewUpload", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseEntity<List<WalkReviewAttachFileVO>> reviewUploadPOST(MultipartFile[] uploadFile) throws Exception {
@@ -108,7 +95,11 @@ public class AjaxController {
 			
 			// 중복 방지를 위한 "랜덤이름_원래이름" 생성 시작 -----------------
 			UUID uuid = UUID.randomUUID();
-			uploadFileName = uuid.toString()+"_"+uploadFileName;
+			String[] uuids = uuid.toString().split("-");
+			String uuid0 = uuids[0];
+			// 너무 길어서 -를 기준으로 잘라서 맨 앞에거만 사용하기~
+			uploadFileName = uuid0+"_"+uploadFileName;
+			
 			// 중복 방지를 위한 "랜덤이름_원래이름" 생성 끝 ------------------
 			
 			try {
@@ -116,21 +107,16 @@ public class AjaxController {
 				File saveFile = new File(uploadPath, uploadFileName);
 				multi.transferTo(saveFile);
 				
-				attachVO.setUuid(uuid.toString());
+				attachVO.setUuid(uuid0);
 				attachVO.setUploadPath(uploadFolderPath);
 				
-				// 이미지 파일 여부 확인 후 썸네일 생성 시작 -----------------
-				if(checkImageType(saveFile)) {
-					attachVO.setImage(true);
-					// 이미지 파일일 경우 파일명 앞에 "s_"를 붙여서 새로운 파일명으로 내보내기
-					FileOutputStream thumbnail = new FileOutputStream(new File(uploadPath, "s_"+uploadFileName));
-					
-					// 내보낸 파일을 100*100으로 변환하여 썸네일 생성 후 파일 스트림 종료
-					Thumbnailator.createThumbnail(multi.getInputStream(), thumbnail, 100, 100);
-					thumbnail.close();
-				}
-				// 이미지 파일 여부 확인 후 썸네일 생성 끝 ------------------
+				// 이미지 파일일 경우 파일명 앞에 "s_"를 붙여서 새로운 파일명으로 내보내기
+				FileOutputStream thumbnail = new FileOutputStream(new File(uploadPath, "s_"+uploadFileName));
 				
+				// 내보낸 파일을 100*100으로 변환하여 썸네일 생성 후 파일 스트림 종료
+				Thumbnailator.createThumbnail(multi.getInputStream(), thumbnail, 100, 100);
+				thumbnail.close();
+
 				// 저장한 attachVO 리스트에 담기
 				list.add(attachVO);
 				

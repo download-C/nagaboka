@@ -106,19 +106,7 @@ public class SecurityMemberTests {
 	
 	
 	
-	@Test   // ㅇㅋ
-	public void getUserTest() throws Exception {
-		log.info("(∩^o^)⊃━☆ getUserTest  호출됨");
-		
-		String u_id = "admin9";
-		UserVO vo = session.selectOne(NAMESPACE+".getUser", u_id);
-		log.info("(∩^o^)⊃━☆ getUserTest  가져온 횐 정보: " + vo);
-		
-		vo.getAuthList()
-		.forEach(userAuthVO -> log.info("(∩^o^)⊃━☆ getUserTest  UserVO -> " + userAuthVO));
-		
-	} // getUserTest()
-
+	
 	
 	
 }
