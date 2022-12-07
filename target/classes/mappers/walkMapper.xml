@@ -7,14 +7,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
 	<!-- 산책 장소 resultMap -->
 	<resultMap type="WalkVO" id="walk">
-		<result property="wno" column="wno" />
-		<result property="wname" column="wname" />
-		<result property="wlat" column="wlat" />
-		<result property="wlng" column="wlng" />
+		<result property="w_no" column="w_no" />
+		<result property="w_name" column="w_name" />
+		<result property="w_lat" column="w_lat" />
+		<result property="w_lng" column="w_lng" />
 	</resultMap>
 	
 	<!-- 산책 장소 댓글 resultMap -->
 	
+
 	<resultMap type="WalkReviewVO" id="review">
 		<result property="wr_no" column="wr_no"/>
 		<result property="wr_regdate" column="wr_regdate"/>
@@ -55,6 +56,22 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		where w_name=#{w_name}
 	</select>
 	
+	<!-- 댓글 달고 난 다음에 해당 장소의  이름으로 댓글 개수 업데이트 -->
+	<update id="updateWlikeCnt">
+		update from walk
+		set wr_count
+	</update>
+	
+	<!-- 댓글 달고 난 다음에 해당 장소의  이름으로 발바닥 개수 업데이트 -->
+	<!-- 해당 장소의 like가 1인 댓글의 개수  -->
+	<update id="updateWRCnt">
+		update from walk
+		set wr_count=(count w_no
+					 from walk_comment
+					 where w_name=#{w_name} and wr_like=1)
+	    where w_name=#{w_name}
+	</update>
+	
 	<!-- 산책 장소 이름으로 목록 정보(장소명, 댓글 수, 발바닥 수) 불러오기 -->
 	<!-- 테스트 완료 -->
 	<select id="getWalkList" resultType="WalkVO">
@@ -63,6 +80,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		from walk w join walk_review c
 		on w.w_no = c.w_no 	
 	</select>
+	
+	
+	<!-- ============== 산책 장소 리뷰 ============== -->
 	
 	<!-- 산책 장소 댓글 입력 -->
 	<!-- 테스트 완료 -->
@@ -75,6 +95,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<select id="getWalkReviewCnt" resultType="Integer">
 		select count(wr_no) from walk_review
 		where w_no = #{w_no}
+		select w.w_no, w.w_name, w_lat, w_lng, count(c.wr_no) as wr_count, sum(c.wr_like) as w_likecount
+		from walk w join walk_comment c
+		on w.w_no = c.w_no 
 	</select>
 	
 	<!-- 특정 산책 장소 댓글 목록 불러오기 -->
